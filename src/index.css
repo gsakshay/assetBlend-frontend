@@ -12,6 +12,11 @@ code {
     monospace;
 }
 
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
 .Footer {
   position: absolute;
     bottom: 0;

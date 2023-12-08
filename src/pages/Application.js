@@ -26,6 +26,9 @@ import LayersIcon from "@mui/icons-material/Layers"
 import { Route, Routes } from "react-router"
 
 import Dashboard from "./Dashboard"
+import { Container } from "@mui/material"
+import Account from "./Account"
+import { Link } from "react-router-dom"
 
 const drawerWidth = 240
 
@@ -106,17 +109,19 @@ export default function Application() {
 						sx={{ flexGrow: 1 }}>
 						Dashboard
 					</Typography>
-					<IconButton color='inherit'>
-						<AccountBoxIcon />
-						<Typography
-							component='h6'
-							variant='h6'
-							color='inherit'
-							noWrap
-							sx={{ flexGrow: 1 }}>
-							Profile
-						</Typography>
-					</IconButton>
+					<Link to='/app/account'>
+						<IconButton color='inherit'>
+							<AccountBoxIcon />
+							<Typography
+								component='h6'
+								variant='h6'
+								color='inherit'
+								noWrap
+								sx={{ flexGrow: 1 }}>
+								Profile
+							</Typography>
+						</IconButton>
+					</Link>
 				</Toolbar>
 			</AppBar>
 			<Drawer variant='permanent' open={open}>
@@ -133,30 +138,38 @@ export default function Application() {
 				</Toolbar>
 				<Divider />
 				<List component='nav'>
-					<ListItemButton>
-						<ListItemIcon>
-							<DashboardIcon />
-						</ListItemIcon>
-						<ListItemText primary='Dashboard' />
-					</ListItemButton>
-					<ListItemButton>
-						<ListItemIcon>
-							<LayersIcon />
-						</ListItemIcon>
-						<ListItemText primary='Asset' />
-					</ListItemButton>
-					<ListItemButton>
-						<ListItemIcon>
-							<PeopleIcon />
-						</ListItemIcon>
-						<ListItemText primary='Advisor' />
-					</ListItemButton>
-					<ListItemButton>
-						<ListItemIcon>
-							<BarChartIcon />
-						</ListItemIcon>
-						<ListItemText primary='Transaction' />
-					</ListItemButton>
+					<Link to='/app/dashboard'>
+						<ListItemButton>
+							<ListItemIcon>
+								<DashboardIcon />
+							</ListItemIcon>
+							<ListItemText primary='Dashboard' />
+						</ListItemButton>
+					</Link>
+					<Link to='/app/assets'>
+						<ListItemButton>
+							<ListItemIcon>
+								<LayersIcon />
+							</ListItemIcon>
+							<ListItemText primary='Assets' />
+						</ListItemButton>
+					</Link>
+					<Link to='/app/advisor'>
+						<ListItemButton>
+							<ListItemIcon>
+								<PeopleIcon />
+							</ListItemIcon>
+							<ListItemText primary='Advisor' />
+						</ListItemButton>
+					</Link>
+					<Link to='/app/transactions'>
+						<ListItemButton>
+							<ListItemIcon>
+								<BarChartIcon />
+							</ListItemIcon>
+							<ListItemText primary='Transaction' />
+						</ListItemButton>
+					</Link>
 
 					<Divider sx={{ my: 1 }} />
 				</List>
@@ -173,13 +186,20 @@ export default function Application() {
 					overflow: "auto",
 				}}>
 				<Toolbar />
-				<Routes>
-					<Route
-						path='/dashbord'
-						action={({ params }) => {}}
-						element={<Dashboard />}
-					/>
-				</Routes>
+				<Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
+					<Routes>
+						<Route
+							path='/dashboard'
+							action={({ params }) => {}}
+							element={<Dashboard />}
+						/>
+						<Route
+							path='/account'
+							action={({ params }) => {}}
+							element={<Account />}
+						/>
+					</Routes>
+				</Container>
 			</Box>
 		</Box>
 	)
