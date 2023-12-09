@@ -9,10 +9,10 @@ function Assets() {
 	return (
 		<Grid container spacing={3}>
 			<Grid item xs={12} sm={6}>
-				<SelectAssets />
+				<SelectAssets assetName='Stocks' />
 			</Grid>
 			<Grid item xs={12} sm={6}>
-				<SelectAssets />
+				<SelectAssets assetName='Crypto' />
 			</Grid>
 		</Grid>
 	)

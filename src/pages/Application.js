@@ -1,5 +1,5 @@
 /** @format */
-import * as React from "react"
+import React, { useState, useEffect } from "react"
 import { styled } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"
 import MuiDrawer from "@mui/material/Drawer"
@@ -28,8 +28,11 @@ import { Route, Routes } from "react-router"
 import Dashboard from "./Dashboard"
 import { Container } from "@mui/material"
 import Account from "./Account"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import Assets from "./Assets"
+
+import { capitalize } from "../utils/helperFunctions"
+import AssetDetail from "./AssetDetail"
 
 const drawerWidth = 240
 
@@ -83,6 +86,14 @@ export default function Application() {
 		setOpen(!open)
 	}
 
+	const { pathname } = useLocation()
+	const [pageName, setPageName] = useState("")
+
+	useEffect(() => {
+		const currentPath = pathname.split("/")
+		setPageName(currentPath[currentPath.length - 1])
+	}, [pathname])
+
 	return (
 		<Box sx={{ display: "flex" }}>
 			<CssBaseline />
@@ -108,7 +119,7 @@ export default function Application() {
 						color='inherit'
 						noWrap
 						sx={{ flexGrow: 1 }}>
-						Dashboard
+						{capitalize(pageName)}
 					</Typography>
 					<Link to='/app/account'>
 						<IconButton color='inherit'>
@@ -163,14 +174,14 @@ export default function Application() {
 							<ListItemText primary='Advisor' />
 						</ListItemButton>
 					</Link>
-					<Link to='/app/transactions'>
+					{/* <Link to='/app/transactions'>
 						<ListItemButton>
 							<ListItemIcon>
 								<BarChartIcon />
 							</ListItemIcon>
 							<ListItemText primary='Transaction' />
 						</ListItemButton>
-					</Link>
+					</Link> */}
 
 					<Divider sx={{ my: 1 }} />
 				</List>
@@ -203,6 +214,11 @@ export default function Application() {
 							path='/assets'
 							action={({ params }) => {}}
 							element={<Assets />}
+						/>
+						<Route
+							path='/assets/:assetId'
+							action={({ params }) => {}}
+							element={<AssetDetail />}
 						/>
 					</Routes>
 				</Container>
