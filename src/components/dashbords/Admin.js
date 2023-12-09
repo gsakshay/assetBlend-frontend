@@ -18,6 +18,12 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import Button from '@mui/material/Button'; // Import Button component
+import Dialog from '@mui/material/Dialog'; // Import Dialog component
+import DialogTitle from '@mui/material/DialogTitle'; // Import DialogTitle component
+import DialogContent from '@mui/material/DialogContent'; // Import DialogContent component
+import TextField from '@mui/material/TextField'; // Import TextField component
+
 
 function createData(id, name, data1, data2) {
 	return { id, name, data1, data2 }
@@ -43,7 +49,17 @@ const assets = [
 
 
 function AdminDashboard() {
-	
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleAddAssetClick = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
 const [assetManagmentData, setAssetManagmentData] = useState({ assets: 22, clients: 32 });
 	return (
 		<div>
@@ -78,17 +94,31 @@ const [assetManagmentData, setAssetManagmentData] = useState({ assets: 22, clien
 					</Paper>
 				</Grid>
 
-                <Grid item xs={12} md={12} align="center" style={{ verticalAlign: 'middle' }}   >
-					<Paper
-						sx={{
-							p: 2,
-							display: "flex",
-							flexDirection: "column",
-							// height: 240,
-						}}>
-						<Title> <AddIcon  align="center" style={{ verticalAlign: 'middle' }}/> Add Asset for main page</Title>
-					</Paper>
-				</Grid>
+                <Grid item xs={12} md={12} align="center" style={{ verticalAlign: 'middle' }}>
+                        <Paper
+                        sx={{
+                            p: 1,
+                        }}
+                        >
+                            <Button variant="outlined" onClick={handleAddAssetClick}>
+                               <AddIcon/> Add Asset
+                            </Button>
+                        
+                        </Paper>
+                    </Grid>
+
+                    <Dialog open={isDialogOpen} onClose={handleCloseDialog} align="center" style={{ verticalAlign: 'middle' }}>
+                        <DialogTitle>Add Asset</DialogTitle>
+                        <DialogContent>
+                        {/* customize the content of the dialog here */}
+                        <TextField label="Search Asset" fullWidth style={{ marginTop: '5px' }}/>
+                        {/* Add other components as needed */}
+                        <Button variant="contained" color="primary" style={{ marginTop: '12px' }}>
+                            Add
+                        </Button>
+                        </DialogContent>
+                    </Dialog>
+
 
                 <Grid item md={6} xs={12}>
 					<Paper sx={{ p: 2, display: "flex", flexDirection: "column"}}>
