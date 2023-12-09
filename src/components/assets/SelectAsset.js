@@ -83,13 +83,13 @@ export const SelectAssets = ({ assetName }) => {
 			<CardContent sx={{ pt: 2 }}>
 				<Box sx={{ m: 2 }}>
 					<Stack spacing={2}>
-						<Link to='app/assets/1'>
+						<Link to='/app/assets/1'>
 							<Item>Item 1</Item>
 						</Link>
-						<Link to='app/assets/1'>
+						<Link to='/app/assets/1'>
 							<Item>Item 1</Item>
 						</Link>
-						<Link to='app/assets/1'>
+						<Link to='/app/assets/1'>
 							<Item>Item 1</Item>
 						</Link>
 					</Stack>
