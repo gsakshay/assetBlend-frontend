@@ -2,6 +2,7 @@
 
 /** @format */
 import * as React from "react"
+import { useEffect, useState } from 'react';
 
 import Container from "@mui/material/Container"
 import Grid from "@mui/material/Grid"
@@ -18,7 +19,7 @@ import {
 	Typography,
 } from "@mui/material"
 import { Link } from "react-router-dom"
-import IndividualChart from "./subComponents/IndividualChart"
+import InvestmentBarChart from "../../components/chart/InvestmentBarChart";
 
 function createData(id, date, asset, amount, action) {
 	return { id, date, asset, amount, action }
@@ -30,9 +31,27 @@ const rows = [
 	createData(0, "16 Mar, 2019", "Apple", 100, "Buy"),
 	createData(0, "16 Mar, 2019", "Apple", 100, "Buy"),
 	createData(0, "16 Mar, 2019", "Apple", 100, "Buy"),
+	createData(0, "16 Mar, 2019", "Apple", 100, "Buy"),
+	createData(0, "16 Mar, 2019", "Apple", 100, "Buy"),
 ]
 
+
 function Dashboard() {
+	
+// useEffect(() => {
+//     // Fetch investment data from your API
+//     // For example purposes, setting some dummy data
+//     const fetchData = async () => {
+//       // Assuming your API returns an object like { totalInvested: 100, currentWorth: 150 }
+//       const response = await fetch('YOUR_API_ENDPOINT');
+//       const data = await response.json();
+//       setInvestmentData(data);
+//     };
+
+//     fetchData();
+//   }, []);
+
+const [investmentData, setInvestmentData] = useState({ totalInvested: 20, currentWorth: 12 });
 	return (
 		<div>
 			<Grid container spacing={3}>
@@ -84,7 +103,7 @@ function Dashboard() {
 					</Paper>
 				</Grid>
 				{/* Recent Orders */}
-				<Grid item xs={6}>
+				<Grid item md={8} xs={12}>
 					<Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
 						<Title>Recent Transactions</Title>
 						<Table size='small'>
@@ -109,10 +128,11 @@ function Dashboard() {
 						</Table>
 					</Paper>
 				</Grid>
-				<Grid item xs={6}>
+				<Grid item md={4} xs={12}>
 					<Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-						<Title>Recent Transactions</Title>
-						<IndividualChart />
+						<Title>Summary</Title>
+						{/* <IndividualChart /> */}
+						<InvestmentBarChart {...investmentData} />
 					</Paper>
 				</Grid>
 			</Grid>
