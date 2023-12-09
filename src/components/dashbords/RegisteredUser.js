@@ -18,6 +18,7 @@ import {
 	Typography,
 } from "@mui/material"
 import { Link } from "react-router-dom"
+import IndividualChart from "./subComponents/IndividualChart"
 
 function createData(id, date, asset, amount, action) {
 	return { id, date, asset, amount, action }
@@ -111,7 +112,7 @@ function Dashboard() {
 				<Grid item xs={6}>
 					<Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
 						<Title>Recent Transactions</Title>
-						Chart will come here
+						<IndividualChart />
 					</Paper>
 				</Grid>
 			</Grid>
