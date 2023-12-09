@@ -12,13 +12,10 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material"
-
-// TODO remove, this demo shouldn't need to reset the theme.
-
-const defaultTheme = createTheme()
+import { useNavigate, useParams } from "react-router"
 
 export default function SignUp() {
+	const navigate = useNavigate()
 	const handleSubmit = (event) => {
 		event.preventDefault()
 		const data = new FormData(event.currentTarget)
@@ -29,68 +26,63 @@ export default function SignUp() {
 	}
 
 	return (
-		<ThemeProvider theme={defaultTheme}>
-			<Container component='main' maxWidth='xs'>
-				<Box
-					sx={{
-						marginTop: 8,
-						display: "flex",
-						flexDirection: "column",
-						alignItems: "center",
-					}}>
-					<Avatar sx={{ m: 1, bgcolor: "primary" }}>
-						<LockOutlinedIcon color='primary' />
-					</Avatar>
-					<Typography component='h1' variant='h5'>
+		<Container component='main' maxWidth='xs'>
+			<Box
+				sx={{
+					marginTop: 8,
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+				}}>
+				<Avatar sx={{ m: 1, bgcolor: "primary" }}>
+					<LockOutlinedIcon color='primary' />
+				</Avatar>
+				<Typography component='h1' variant='h5'>
+					Sign In
+				</Typography>
+				<Box component='form' noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+					<Grid container spacing={2}>
+						<Grid item xs={12}>
+							<TextField
+								autoComplete='username'
+								name='username'
+								required
+								fullWidth
+								id='username'
+								label='Username'
+								autoFocus
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							<TextField
+								required
+								fullWidth
+								name='password'
+								label='Password'
+								type='password'
+								id='password'
+								autoComplete='new-password'
+							/>
+						</Grid>
+					</Grid>
+					<Button
+						onClick={() => navigate(`/app/dashboard`)}
+						type='submit'
+						fullWidth
+						variant='contained'
+						color='primary'
+						sx={{ mt: 3, mb: 2 }}>
 						Sign In
-					</Typography>
-					<Box
-						component='form'
-						noValidate
-						onSubmit={handleSubmit}
-						sx={{ mt: 3 }}>
-						<Grid container spacing={2}>
-							<Grid item xs={12}>
-								<TextField
-									autoComplete='username'
-									name='username'
-									required
-									fullWidth
-									id='username'
-									label='Username'
-									autoFocus
-								/>
-							</Grid>
-							<Grid item xs={12}>
-								<TextField
-									required
-									fullWidth
-									name='password'
-									label='Password'
-									type='password'
-									id='password'
-									autoComplete='new-password'
-								/>
-							</Grid>
+					</Button>
+					<Grid container justifyContent='flex-end'>
+						<Grid item>
+							<Link href='/signup' variant='body2'>
+								Don't have an account yet? Sign Up
+							</Link>
 						</Grid>
-						<Button
-							type='submit'
-							fullWidth
-							variant='contained'
-							color='primary'
-							sx={{ mt: 3, mb: 2 }}>
-							Sign In
-						</Button>
-						<Grid container justifyContent='flex-end'>
-							<Grid item>
-								<Link href='/signup' variant='body2'>
-									Don't have an account yet? Sign Up
-								</Link>
-							</Grid>
-						</Grid>
-					</Box>
+					</Grid>
 				</Box>
-			</Container>
-		</ThemeProvider>
+			</Box>
+		</Container>
 	)
 }

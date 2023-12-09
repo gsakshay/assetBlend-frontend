@@ -10,6 +10,10 @@ import theme from "./MUItheme/theme"
 import { ThemeProvider } from "@mui/material/styles"
 import { BrowserRouter } from "react-router-dom"
 import { Routes, Route, Navigate } from "react-router"
+import Home from "./pages/Home"
+
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 
 function Copyright(props) {
 	return (
@@ -32,33 +36,41 @@ function Copyright(props) {
 function App() {
 	return (
 		<ThemeProvider theme={theme}>
-			<BrowserRouter>
-				<div className='App'>
-					<Routes>
-						<Route
-							exact
-							path='/signin'
-							action={({ params }) => {}}
-							element={<Signin />}
-						/>
-						<Route
-							exact
-							path='/signup'
-							action={({ params }) => {}}
-							element={<SignUp />}
-						/>
-						<Route
-							exact
-							path='/app/*'
-							action={({ params }) => {}}
-							element={<Application />}
-						/>
-					</Routes>
-					<div className='Footer'>
+			<LocalizationProvider dateAdapter={AdapterDayjs}>
+				<BrowserRouter>
+					<div className='App'>
+						<Routes>
+							<Route
+								exact
+								path='/'
+								action={({ params }) => {}}
+								element={<Home />}
+							/>
+							<Route
+								exact
+								path='/signin'
+								action={({ params }) => {}}
+								element={<Signin />}
+							/>
+							<Route
+								exact
+								path='/signup'
+								action={({ params }) => {}}
+								element={<SignUp />}
+							/>
+							<Route
+								exact
+								path='/app/*'
+								action={({ params }) => {}}
+								element={<Application />}
+							/>
+						</Routes>
+						{/* <div className='Footer'>
 						<Copyright />
+					</div> */}
 					</div>
-				</div>
-			</BrowserRouter>
+				</BrowserRouter>
+			</LocalizationProvider>
 		</ThemeProvider>
 	)
 }

@@ -29,6 +29,7 @@ import Dashboard from "./Dashboard"
 import { Container } from "@mui/material"
 import Account from "./Account"
 import { Link } from "react-router-dom"
+import Assets from "./Assets"
 
 const drawerWidth = 240
 
@@ -197,6 +198,11 @@ export default function Application() {
 							path='/account'
 							action={({ params }) => {}}
 							element={<Account />}
+						/>
+						<Route
+							path='/assets'
+							action={({ params }) => {}}
+							element={<Assets />}
 						/>
 					</Routes>
 				</Container>

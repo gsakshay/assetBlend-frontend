@@ -18,8 +18,12 @@ a {
 }
 
 .Footer {
-  position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 2.5rem;
+  position:relative;
+  bottom: 2rem;
+  width: 100%;
+  height: 2.5rem;
+}
+
+.MuiFormControl-root {
+  width: 100%;
 }
