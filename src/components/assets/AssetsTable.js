@@ -92,7 +92,7 @@ function fixedHeaderContent() {
 					sx={{
 						backgroundColor: "background.paper",
 					}}>
-					{column.label}
+					<strong>{column.label}</strong>
 				</TableCell>
 			))}
 			<TableCell
@@ -103,7 +103,7 @@ function fixedHeaderContent() {
 				sx={{
 					backgroundColor: "background.paper",
 				}}>
-				Sell
+				<strong>Sell</strong>
 			</TableCell>
 		</TableRow>
 	)

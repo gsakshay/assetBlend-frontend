@@ -105,8 +105,8 @@ function Assets() {
 					onChange={handleChange}
 					aria-label='Vertical tabs example'
 					sx={{ borderRight: 1, borderColor: "divider" }}>
-					<Tab label='Item One' />
-					<Tab label='Item Two' />
+					<Tab sx={{ p: 3, textAlign: "center" }} label='User 1' />
+					<Tab sx={{ p: 3 }} label='User 2' />
 				</Tabs>
 
 				<TabPanel
