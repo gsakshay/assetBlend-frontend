@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
 	profile: {
-		id: "",
+		_id: "",
 		role: "",
 		username: "",
 		password: "",
@@ -39,7 +39,10 @@ const userSlice = createSlice({
 	initialState,
 	reducers: {
 		setUserProfile: (state, action) => {
-			state.profile = action.payload
+			state.profile = {
+				...state.profile,
+				...action.payload,
+			}
 		},
 		setRolesAvailable: (state, action) => {
 			state.rolesAvailable = action.payload

@@ -13,3 +13,12 @@ export const signin = async (userDate) => {
 	const response = await axios.post(`${AUTH_URL}/login`, userDate)
 	return response.data
 }
+
+export const logout = async () => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+
+	const response = await axios.post(`${AUTH_URL}/logout`)
+	return response.data
+}

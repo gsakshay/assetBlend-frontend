@@ -7,52 +7,42 @@ import {
 	Card,
 	CardActions,
 	CardContent,
-	Divider,
 	Typography,
 } from "@mui/material"
 
-const user = {
-	avatar: "",
-	city: "Los Angeles",
-	country: "USA",
-	jobTitle: "Senior Developer",
-	name: "Anika Visser",
-	timezone: "GTM-7",
-}
-
-export const AccountProfile = () => (
-	<Card>
-		<CardContent>
-			<Box
-				sx={{
-					alignItems: "center",
-					display: "flex",
-					flexDirection: "column",
-				}}>
-				<Avatar
-					src={user.avatar}
+export const AccountProfile = ({ username, logout }) => {
+	return (
+		<Card>
+			<CardContent>
+				<Box
 					sx={{
-						height: 80,
-						mb: 2,
-						width: 80,
+						alignItems: "center",
+						display: "flex",
+						flexDirection: "column",
+					}}>
+					<Avatar
+						sx={{
+							height: 80,
+							mb: 2,
+							width: 80,
+						}}
+					/>
+					<Typography gutterBottom variant='h5'>
+						{username}
+					</Typography>
+				</Box>
+			</CardContent>
+			<CardActions>
+				<Button
+					onClick={() => {
+						logout()
 					}}
-				/>
-				<Typography gutterBottom variant='h5'>
-					{user.name}
-				</Typography>
-				<Typography color='text.secondary' variant='body2'>
-					{user.city} {user.country}
-				</Typography>
-				<Typography color='text.secondary' variant='body2'>
-					{user.timezone}
-				</Typography>
-			</Box>
-		</CardContent>
-		<Divider />
-		{/* <CardActions>
-			<Button fullWidth variant='text'>
-				Upload picture
-			</Button>
-		</CardActions> */}
-	</Card>
-)
+					fullWidth
+					variant='outlined'
+					color='secondary'>
+					Logout
+				</Button>
+			</CardActions>
+		</Card>
+	)
+}

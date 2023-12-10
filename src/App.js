@@ -1,5 +1,5 @@
 /** @format */
-import React, { useState } from "react"
+import React, { useEffect } from "react"
 
 import { Typography } from "@mui/material"
 import { Link } from "react-router-dom"
@@ -23,6 +23,7 @@ import MuiAlert from "@mui/material/Alert"
 
 import { useSelector, useDispatch } from "react-redux"
 import { closeNotification } from "./store/notificationReducer"
+import { setAuthenticated } from "./store/userReducer"
 
 const Alert = React.forwardRef(function Alert(props, ref) {
 	return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />
@@ -57,6 +58,14 @@ function App() {
 	)
 
 	const handleClose = (event, r) => dispatch(closeNotification())
+
+	// Check if the user is authenticated
+	useEffect(() => {
+		const accessToken = sessionStorage.getItem("accessToken")
+		if (accessToken) {
+			dispatch(setAuthenticated(true))
+		}
+	}, [])
 
 	return (
 		<ThemeProvider theme={theme}>
