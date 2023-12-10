@@ -1,4 +1,6 @@
 /** @format */
+import React, { useState } from "react"
+
 import { Typography } from "@mui/material"
 import { Link } from "react-router-dom"
 
@@ -14,6 +16,17 @@ import Home from "./pages/Home"
 
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+
+// Snackbar for success and error messages
+import Snackbar from "@mui/material/Snackbar"
+import MuiAlert from "@mui/material/Alert"
+
+import { useSelector, useDispatch } from "react-redux"
+import { closeNotification } from "./store/notificationReducer"
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+	return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />
+})
 
 function Copyright(props) {
 	return (
@@ -34,6 +47,13 @@ function Copyright(props) {
 }
 
 function App() {
+	const dispatch = useDispatch()
+	const notificationDetails = useSelector(
+		(state) => state?.notificationReducer?.alert
+	)
+
+	const handleClose = (event, r) => dispatch(closeNotification())
+
 	return (
 		<ThemeProvider theme={theme}>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -65,6 +85,18 @@ function App() {
 								element={<Application />}
 							/>
 						</Routes>
+
+						<Snackbar
+							open={notificationDetails.open}
+							autoHideDuration={4000}
+							onClose={handleClose}>
+							<Alert
+								onClose={handleClose}
+								severity={notificationDetails.severity}
+								sx={{ width: "100%" }}>
+								{notificationDetails.message}
+							</Alert>
+						</Snackbar>
 						{/* <div className='Footer'>
 						<Copyright />
 					</div> */}

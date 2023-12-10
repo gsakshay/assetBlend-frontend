@@ -103,7 +103,6 @@ function Assets() {
 					variant='scrollable'
 					value={value}
 					onChange={handleChange}
-					aria-label='Vertical tabs example'
 					sx={{ borderRight: 1, borderColor: "divider" }}>
 					<Tab sx={{ p: 3, textAlign: "center" }} label='User 1' />
 					<Tab sx={{ p: 3 }} label='User 2' />

@@ -1,6 +1,6 @@
 /** @format */
 
-import * as React from "react"
+import React, { useState, useEffect } from "react"
 import Avatar from "@mui/material/Avatar"
 import Button from "@mui/material/Button"
 import CssBaseline from "@mui/material/CssBaseline"
@@ -11,142 +11,269 @@ import Box from "@mui/material/Box"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material"
 
-// TODO remove, this demo shouldn't need to reset the theme.
+// Redux
+import { useSelector, useDispatch } from "react-redux"
+import { setUserProfile } from "../store/userReducer"
+import { setNotification } from "../store/notificationReducer"
 
-const defaultTheme = createTheme()
+// Services
+import { getAllRoles } from "../services/roles"
+import { signup } from "../services/auth"
+import { useNavigate } from "react-router"
 
 export default function SignUp() {
-	const handleSubmit = (event) => {
-		event.preventDefault()
-		const data = new FormData(event.currentTarget)
-		console.log({
-			email: data.get("email"),
-			password: data.get("password"),
-		})
+	const [allRoles, setAllRoles] = useState([])
+	const [selectedRole, setSelectedRole] = useState("")
+
+	const navigate = useNavigate()
+
+	// Dispatchers
+	const dispatch = useDispatch()
+	const profileDetails = useSelector((state) => state.userReducer.profile)
+
+	const getAllUserRoles = async () => {
+		const roles = await getAllRoles()
+		setAllRoles(roles)
 	}
 
+	// Register User
+	const handleSubmit = async (event) => {
+		event.preventDefault()
+		// Get the data ready
+		let formData = {}
+		formData = {
+			...profileDetails,
+			role: selectedRole,
+		}
+
+		try {
+			const response = await signup(formData)
+
+			// Store the access token, it will be needed when we make further request calls
+			sessionStorage.setItem("accessToken", response?.accessToken)
+			dispatch(
+				setNotification({
+					severity: "success",
+					message: "User registered successfully!",
+				})
+			)
+			navigate("/app/dashboard")
+		} catch (e) {
+			dispatch(
+				setNotification({
+					severity: "error",
+					message: e?.response?.data?.message,
+				})
+			)
+		}
+	}
+
+	useEffect(() => {
+		getAllUserRoles()
+	}, [])
+
 	return (
-		<ThemeProvider theme={defaultTheme}>
-			<Container component='main' maxWidth='xs'>
-				<CssBaseline />
-				<Box
-					sx={{
-						marginTop: 8,
-						display: "flex",
-						flexDirection: "column",
-						alignItems: "center",
-					}}>
-					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-						<LockOutlinedIcon />
-					</Avatar>
-					<Typography component='h1' variant='h5'>
-						Sign up
-					</Typography>
-					<Box
-						component='form'
-						noValidate
-						onSubmit={handleSubmit}
-						sx={{ mt: 3 }}>
-						<Grid container spacing={2}>
-							<Grid item xs={12} sm={6}>
-								<TextField
-									autoComplete='given-name'
-									name='firstName'
-									required
-									fullWidth
-									id='firstName'
-									label='First Name'
-									autoFocus
-								/>
-							</Grid>
-							<Grid item xs={12} sm={6}>
-								<TextField
-									required
-									fullWidth
-									id='lastName'
-									label='Last Name'
-									name='lastName'
-									autoComplete='family-name'
-								/>
-							</Grid>
-							<Grid item xs={12}>
-								<TextField
-									required
-									fullWidth
-									id='email'
-									label='Email Address'
-									name='email'
-									autoComplete='email'
-								/>
-							</Grid>
-							<Grid item xs={12} sm={6}>
-								<TextField
-									autoComplete='username'
-									name='username'
-									required
-									fullWidth
-									id='username'
-									label='Username'
-								/>
-							</Grid>
-							<Grid item xs={12} sm={6}>
-								<TextField
-									required
-									fullWidth
-									name='password'
-									label='Password'
-									type='password'
-									id='password'
-									autoComplete='new-password'
-								/>
-							</Grid>
-							<Grid item xs={12}>
-								<TextField
-									// required
-									fullWidth
-									id='address'
-									label='Address'
-									name='address'
-									autoComplete='address'
-								/>
-							</Grid>
-							<Grid item xs={12}>
-								<FormControl fullWidth>
-									<InputLabel id='user-role'>Role</InputLabel>
-									<Select
-										labelId='user-role'
-										id='user-role'
-										// value={age}
-										label='Role'
-										// onChange={handleChange}
-									>
-										<MenuItem value={10}>Individual</MenuItem>
-										<MenuItem value={20}>Advisor</MenuItem>
-									</Select>
-								</FormControl>
-							</Grid>
+		<Container component='main' maxWidth='xs'>
+			<CssBaseline />
+			<Box
+				sx={{
+					marginTop: 8,
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+				}}>
+				<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+					<LockOutlinedIcon />
+				</Avatar>
+				<Typography component='h1' variant='h5'>
+					Sign up
+				</Typography>
+				<Box noValidate sx={{ mt: 3 }}>
+					<Grid container spacing={2}>
+						<Grid item xs={12} sm={6}>
+							<TextField
+								autoComplete='given-name'
+								name='firstName'
+								required
+								fullWidth
+								id='firstName'
+								label='First Name'
+								autoFocus
+								value={profileDetails.firstName}
+								onChange={(e) => {
+									dispatch(
+										setUserProfile({
+											...profileDetails,
+											firstName: e.target.value,
+										})
+									)
+								}}
+							/>
 						</Grid>
-						<Button
-							type='submit'
-							fullWidth
-							variant='contained'
-							color='secondary'
-							sx={{ mt: 3, mb: 2 }}>
-							Sign Up
-						</Button>
-						<Grid container justifyContent='flex-end'>
-							<Grid item>
-								<Link href='/signin' variant='body2'>
-									Already have an account? Sign in
-								</Link>
-							</Grid>
+						<Grid item xs={12} sm={6}>
+							<TextField
+								required
+								fullWidth
+								id='lastName'
+								label='Last Name'
+								name='lastName'
+								autoComplete='family-name'
+								value={profileDetails.lastName}
+								onChange={(e) => {
+									dispatch(
+										setUserProfile({
+											...profileDetails,
+											lastName: e.target.value,
+										})
+									)
+								}}
+							/>
 						</Grid>
-					</Box>
+						<Grid item xs={12}>
+							<TextField
+								required
+								fullWidth
+								id='email'
+								label='Email Address'
+								name='email'
+								autoComplete='email'
+								value={profileDetails.email}
+								onChange={(e) => {
+									dispatch(
+										setUserProfile({
+											...profileDetails,
+											email: e.target.value,
+										})
+									)
+								}}
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							<TextField
+								// type='number'
+								required
+								fullWidth
+								id='phone'
+								label='Phone Number'
+								name='phone'
+								autoComplete='phone'
+								value={profileDetails.phone}
+								onChange={(e) => {
+									dispatch(
+										setUserProfile({
+											...profileDetails,
+											phone: e.target.value,
+										})
+									)
+								}}
+							/>
+						</Grid>
+						<Grid item xs={12} sm={6}>
+							<TextField
+								autoComplete='username'
+								name='username'
+								required
+								fullWidth
+								id='username'
+								label='Username'
+								value={profileDetails.username}
+								onChange={(e) => {
+									dispatch(
+										setUserProfile({
+											...profileDetails,
+											username: e.target.value,
+										})
+									)
+								}}
+							/>
+						</Grid>
+						<Grid item xs={12} sm={6}>
+							<TextField
+								required
+								fullWidth
+								name='password'
+								label='Password'
+								type='password'
+								id='password'
+								autoComplete='new-password'
+								value={profileDetails.password}
+								onChange={(e) => {
+									dispatch(
+										setUserProfile({
+											...profileDetails,
+											password: e.target.value,
+										})
+									)
+								}}
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							<TextField
+								// required
+								fullWidth
+								id='address'
+								label='Address'
+								name='address'
+								autoComplete='address'
+								value={profileDetails.address}
+								onChange={(e) => {
+									dispatch(
+										setUserProfile({
+											...profileDetails,
+											address: e.target.value,
+										})
+									)
+								}}
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							<FormControl fullWidth>
+								<InputLabel id='user-role'>Role</InputLabel>
+								<Select
+									labelId='user-role'
+									id='user-role'
+									value={selectedRole}
+									label='Role'
+									onChange={(e) => setSelectedRole(e.target.value)}>
+									{allRoles.map((role) => (
+										<MenuItem key={role?._id} value={role?._id}>
+											{role?.roleName}
+										</MenuItem>
+									))}
+								</Select>
+							</FormControl>
+						</Grid>
+					</Grid>
+					<Button
+						type='submit'
+						fullWidth
+						variant='contained'
+						color='secondary'
+						sx={{ mt: 3, mb: 2 }}
+						onClick={handleSubmit}
+						disabled={
+							!profileDetails.username ||
+							// !profileDetails.role ||
+							!profileDetails.firstName ||
+							!profileDetails.lastName ||
+							!profileDetails.email ||
+							!profileDetails.phone ||
+							!profileDetails.password ||
+							!profileDetails.address
+						}>
+						Sign Up
+					</Button>
+					<Grid container justifyContent='flex-end'>
+						<Grid item>
+							<Link href='/signin' variant='body2'>
+								Already have an account? Sign in
+							</Link>
+						</Grid>
+					</Grid>
 				</Box>
-			</Container>
-		</ThemeProvider>
+			</Box>
+		</Container>
 	)
 }
