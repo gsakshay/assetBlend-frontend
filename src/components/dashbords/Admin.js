@@ -24,6 +24,7 @@ import DialogTitle from '@mui/material/DialogTitle'; // Import DialogTitle compo
 import DialogContent from '@mui/material/DialogContent'; // Import DialogContent component
 import TextField from '@mui/material/TextField'; // Import TextField component
 import { Link } from "react-router-dom";
+import { searchStocks } from "./DumyAPI";
 
 
 function createData(id, name, data1, data2) {
@@ -59,6 +60,19 @@ function AdminDashboard() {
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
+  };
+
+//   For Search
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearchChange = (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+
+    // Call the searchStocks function and update the searchResults state
+    const results = searchStocks(query);
+    setSearchResults(results);
   };
 
 const [assetManagmentData, setAssetManagmentData] = useState({ assets: 22, clients: 32 });
@@ -149,18 +163,36 @@ const [assetManagmentData, setAssetManagmentData] = useState({ assets: 22, clien
 					</Paper>
 				</Grid>
 				
-				<Dialog open={isDialogOpen} onClose={handleCloseDialog} align="center" style={{ verticalAlign: 'middle' }}>
-                        <DialogTitle>Add Asset</DialogTitle>
-                        <DialogContent>
-                        {/* customize the content of the dialog here */}
-                        <TextField label="Search Asset" fullWidth style={{ marginTop: '5px' }}/>
-                        {/* Add other components as needed */}
-                        <Button variant="contained" color="primary" style={{ marginTop: '12px' }}>
-                            Add
-                        </Button>
-                        </DialogContent>
-                    </Dialog>
+				<Dialog open={isDialogOpen} md={12} xs={12} onClose={handleCloseDialog} align="center" style={{ verticalAlign: 'middle' }}>
+					<DialogTitle>Add Asset</DialogTitle>
+					<DialogContent>
+					{/* Add a TextField for search with onChange event */}
+					<TextField
+						label="Search Asset"
+						fullWidth
+						style={{ marginTop: '5px' }}
+						value={searchQuery}
+						onChange={handleSearchChange}
+					/>
 
+					{/* Display search results */}
+					{searchResults.map((result) => (
+						<div key={result}>
+						<Button
+							variant="contained"
+							color="primary"
+							style={{ marginTop: '12px', width:'100%' }}
+							onClick={() => {
+							// Handle selection logic (add to the assets array, for example)
+							console.log(`Selected: ${result}`);
+							}}
+						>
+							{result}
+						</Button>
+						</div>
+					))}
+					</DialogContent>
+				</Dialog>
                 <Grid item md={6} xs={12}>
 					<Paper sx={{ p: 2, display: "flex", flexDirection: "column"}}>
 						
