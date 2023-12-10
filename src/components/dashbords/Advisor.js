@@ -19,6 +19,7 @@ import {
 	Typography,
 } from "@mui/material"
 import AssetManagmentBarChart from "../chart/AssetManagmentBarChart";
+import UserProfitTrackerTable from "../advisor/UserProfitTrackerTable";
 
 function createData(id, name, data1, data2) {
 	return { id, name, data1, data2 }
@@ -78,6 +79,7 @@ const [assetManagmentData, setAssetManagmentData] = useState({ assets: 22, clien
 								flexDirection: "column",
 								height: 240,
 							}}>
+								<UserProfitTrackerTable/>
 						</Paper>
 					</Grid>
 			</Grid>
