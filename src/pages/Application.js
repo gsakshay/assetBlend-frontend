@@ -33,6 +33,7 @@ import Assets from "./Assets"
 
 import { capitalize } from "../utils/helperFunctions"
 import AssetDetail from "./AssetDetail"
+import Advisor from "./Advisor"
 
 const drawerWidth = 240
 
@@ -219,6 +220,11 @@ export default function Application() {
 							path='/assets/:assetId'
 							action={({ params }) => {}}
 							element={<AssetDetail />}
+						/>
+						<Route
+							path='/advisor'
+							action={({ params }) => {}}
+							element={<Advisor />}
 						/>
 					</Routes>
 				</Container>

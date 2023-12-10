@@ -94,7 +94,7 @@ const [assetManagmentData, setAssetManagmentData] = useState({ assets: 22, clien
 					</Paper>
 				</Grid>
 
-                <Grid item xs={12} md={12} align="center" style={{ verticalAlign: 'middle' }}>
+                	<Grid item xs={12} md={12} align="center" style={{ verticalAlign: 'middle' }}>
                         <Paper
                         sx={{
                             p: 1,
