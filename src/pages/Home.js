@@ -21,6 +21,7 @@ import TextField from "@mui/material/TextField"
 import MenuItem from "@mui/material/MenuItem"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import dayjs from "dayjs"
+import CustomAppBar from "../components/CustomAppBar/CustomAppBar"
 
 const cards = [1, 2, 3, 4, 5, 6]
 
@@ -48,14 +49,7 @@ export default function Home() {
 	return (
 		<>
 			<CssBaseline />
-			<AppBar position='relative'>
-				<Toolbar>
-					<PaidIcon sx={{ mr: 2 }} />
-					<Typography variant='h6' color='inherit' noWrap>
-						Asset Alchamy
-					</Typography>
-				</Toolbar>
-			</AppBar>
+			<CustomAppBar />
 			<main>
 				{/* Hero unit */}
 				<Box

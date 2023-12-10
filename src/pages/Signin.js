@@ -11,78 +11,133 @@ import Box from "@mui/material/Box"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
-import { createTheme, ThemeProvider } from "@mui/material/styles"
 import { useNavigate, useParams } from "react-router"
+import CustomAppBar from "../components/CustomAppBar/CustomAppBar"
+
+// Redux
+import { useSelector, useDispatch } from "react-redux"
+import { setUserProfile, setAuthenticated } from "../store/userReducer"
+import { setNotification } from "../store/notificationReducer"
+// Services
+import { signin } from "../services/auth"
 
 export default function SignUp() {
 	const navigate = useNavigate()
-	const handleSubmit = (event) => {
+
+	const dispatch = useDispatch()
+	const profileDetails = useSelector((state) => state.userReducer?.profile)
+
+	const handleSignin = async (event) => {
 		event.preventDefault()
-		const data = new FormData(event.currentTarget)
-		console.log({
-			email: data.get("email"),
-			password: data.get("password"),
-		})
+
+		const formData = {
+			username: profileDetails.username,
+			password: profileDetails.password,
+		}
+
+		try {
+			const response = await signin(formData)
+
+			// Store the access token, it will be needed when we make further request calls
+			sessionStorage.setItem("accessToken", response?.accessToken)
+			dispatch(
+				setNotification({
+					severity: "success",
+					message: "User logged in successfully!",
+				})
+			)
+			dispatch(setAuthenticated(true))
+			navigate("/app/dashboard")
+		} catch (e) {
+			dispatch(
+				setNotification({
+					severity: "error",
+					message: e?.response?.data?.message,
+				})
+			)
+		}
 	}
 
 	return (
-		<Container component='main' maxWidth='xs'>
-			<Box
-				sx={{
-					marginTop: 8,
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "center",
-				}}>
-				<Avatar sx={{ m: 1, bgcolor: "primary" }}>
-					<LockOutlinedIcon color='primary' />
-				</Avatar>
-				<Typography component='h1' variant='h5'>
-					Sign In
-				</Typography>
-				<Box component='form' noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<TextField
-								autoComplete='username'
-								name='username'
-								required
-								fullWidth
-								id='username'
-								label='Username'
-								autoFocus
-							/>
-						</Grid>
-						<Grid item xs={12}>
-							<TextField
-								required
-								fullWidth
-								name='password'
-								label='Password'
-								type='password'
-								id='password'
-								autoComplete='new-password'
-							/>
-						</Grid>
-					</Grid>
-					<Button
-						onClick={() => navigate(`/app/dashboard`)}
-						type='submit'
-						fullWidth
-						variant='contained'
-						color='primary'
-						sx={{ mt: 3, mb: 2 }}>
+		<>
+			<CustomAppBar />
+			<Container component='main' maxWidth='xs'>
+				<Box
+					sx={{
+						marginTop: 8,
+						display: "flex",
+						flexDirection: "column",
+						alignItems: "center",
+					}}>
+					<Avatar sx={{ m: 1, bgcolor: "primary" }}>
+						<LockOutlinedIcon color='primary' />
+					</Avatar>
+					<Typography component='h1' variant='h5'>
 						Sign In
-					</Button>
-					<Grid container justifyContent='flex-end'>
-						<Grid item>
-							<Link href='/signup' variant='body2'>
-								Don't have an account yet? Sign Up
-							</Link>
+					</Typography>
+					<Box noValidate sx={{ mt: 3 }}>
+						<Grid container spacing={2}>
+							<Grid item xs={12}>
+								<TextField
+									autoComplete='username'
+									name='username'
+									required
+									fullWidth
+									id='username'
+									label='Username'
+									autoFocus
+									value={profileDetails?.username}
+									onChange={(e) =>
+										dispatch(
+											setUserProfile({
+												...profileDetails,
+												username: e.target.value,
+											})
+										)
+									}
+								/>
+							</Grid>
+							<Grid item xs={12}>
+								<TextField
+									required
+									fullWidth
+									name='password'
+									label='Password'
+									type='password'
+									id='password'
+									autoComplete='new-password'
+									value={profileDetails.password}
+									onChange={(e) =>
+										dispatch(
+											setUserProfile({
+												...profileDetails,
+												password: e.target.value,
+											})
+										)
+									}
+								/>
+							</Grid>
 						</Grid>
-					</Grid>
+						<Button
+							onClick={handleSignin}
+							type='submit'
+							fullWidth
+							variant='contained'
+							color='primary'
+							disabled={!profileDetails.username || !profileDetails.password}
+							sx={{ mt: 3, mb: 2 }}>
+							Sign In
+						</Button>
+						<Grid container justifyContent='flex-end'>
+							<Grid item>
+								<Link href='/signup' variant='body2'>
+									Don't have an account yet? Sign Up
+								</Link>
+							</Grid>
+						</Grid>
+					</Box>
 				</Box>
-			</Box>
-		</Container>
+			</Container>
+		</>
 	)
 }

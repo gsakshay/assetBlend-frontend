@@ -2,24 +2,20 @@
 
 import { createSlice } from "@reduxjs/toolkit"
 
-const roles = {
-	CLIENT: "CLIENT",
-	ADVISOR: "ADVISOR",
-	ADMIN: "ADMIN",
-}
-
 const initialState = {
 	profile: {
 		id: "",
 		role: "",
-		username: "testuser",
-		password: "test",
-		firstName: "Test",
-		lastName: "User",
-		email: "test@gmail.com",
-		phone: "8887779999",
-		address: "Longwood Ave",
+		username: "",
+		password: "",
+		firstName: "",
+		lastName: "",
+		email: "",
+		phone: "",
+		address: "",
 	},
+	isAuthenticated: false,
+	rolesAvailable: [],
 	// Registered user details
 	totalInvestedAmount: 0,
 	totalCurrentWorth: 0,
@@ -45,6 +41,12 @@ const userSlice = createSlice({
 		setUserProfile: (state, action) => {
 			state.profile = action.payload
 		},
+		setRolesAvailable: (state, action) => {
+			state.rolesAvailable = action.payload
+		},
+		setAuthenticated: (state, action) => {
+			state.isAuthenticated = action.payload
+		},
 		setUserDashboard: (state, action) => {
 			const {
 				totalInvestedAmount,
@@ -61,5 +63,10 @@ const userSlice = createSlice({
 	},
 })
 
-export const { setUserProfile, setUserDashboard } = userSlice.actions
+export const {
+	setUserProfile,
+	setUserDashboard,
+	setRolesAvailable,
+	setAuthenticated,
+} = userSlice.actions
 export default userSlice.reducer

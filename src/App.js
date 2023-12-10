@@ -10,7 +10,7 @@ import Application from "./pages/Application"
 
 import theme from "./MUItheme/theme"
 import { ThemeProvider } from "@mui/material/styles"
-import { BrowserRouter } from "react-router-dom"
+import { BrowserRouter, Redirect } from "react-router-dom"
 import { Routes, Route, Navigate } from "react-router"
 import Home from "./pages/Home"
 
@@ -52,6 +52,10 @@ function App() {
 		(state) => state?.notificationReducer?.alert
 	)
 
+	const isUserAuthenticated = useSelector(
+		(state) => state?.userReducer?.isAuthenticated
+	)
+
 	const handleClose = (event, r) => dispatch(closeNotification())
 
 	return (
@@ -78,12 +82,20 @@ function App() {
 								action={({ params }) => {}}
 								element={<SignUp />}
 							/>
-							<Route
-								exact
-								path='/app/*'
-								action={({ params }) => {}}
-								element={<Application />}
-							/>
+
+							{isUserAuthenticated ? (
+								<Route
+									path='/app/*'
+									action={({ params }) => {}}
+									element={<Application />}
+								/>
+							) : (
+								<Route
+									path='*'
+									action={({ params }) => {}}
+									element={<Signin />}
+								/>
+							)}
 						</Routes>
 
 						<Snackbar
