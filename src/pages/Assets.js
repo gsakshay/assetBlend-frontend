@@ -2,7 +2,6 @@
 
 import { Divider, Grid, Typography } from "@mui/material"
 import React from "react"
-import Title from "../components/Title"
 import { SelectAssets } from "../components/assets/SelectAsset"
 import AssetsTable from "../components/assets/AssetsTable"
 import PropTypes from "prop-types"

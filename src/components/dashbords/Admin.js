@@ -23,6 +23,7 @@ import Dialog from '@mui/material/Dialog'; // Import Dialog component
 import DialogTitle from '@mui/material/DialogTitle'; // Import DialogTitle component
 import DialogContent from '@mui/material/DialogContent'; // Import DialogContent component
 import TextField from '@mui/material/TextField'; // Import TextField component
+import { Link } from "react-router-dom";
 
 
 function createData(id, name, data1, data2) {
@@ -64,22 +65,41 @@ const [assetManagmentData, setAssetManagmentData] = useState({ assets: 22, clien
 	return (
 		<div>
 			<Grid container spacing={3}>	
-                <Grid item xs={12} md={6}>
-					<Paper
-						sx={{
-							p: 2,
-							display: "flex",
-							flexDirection: "column",
-							// height: 240,
-						}}>
-						<Title>Total Number of Users</Title>
-						<Typography component='p' variant='h4'>
-							3,024
-						</Typography>
-					</Paper>
+                <Grid item xs={12} md={4}>
+					<Link to="/app/UsersList">
+						<Paper
+							sx={{
+								p: 2,
+								display: "flex",
+								flexDirection: "column",
+								// height: 240,
+							}}>
+							<Title>Total Number of Users</Title>
+							<Typography component='p' variant='h4'>
+								3,024
+							</Typography>
+						</Paper>
+					</Link>
 				</Grid>		
 
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={4}>
+					<Link to="/app/AdvisorList">
+						<Paper
+							sx={{
+								p: 2,
+								display: "flex",
+								flexDirection: "column",
+								// height: 240,
+							}}>
+							<Title>Total Number of Advisor</Title>
+							<Typography component='p' variant='h4'>
+								22
+							</Typography>
+						</Paper>
+					</Link>
+				</Grid>
+
+				<Grid item xs={12} md={4}>
 					<Paper
 						sx={{
 							p: 2,
@@ -94,30 +114,6 @@ const [assetManagmentData, setAssetManagmentData] = useState({ assets: 22, clien
 					</Paper>
 				</Grid>
 
-                	<Grid item xs={12} md={12} align="center" style={{ verticalAlign: 'middle' }}>
-                        <Paper
-                        sx={{
-                            p: 1,
-                        }}
-                        >
-                            <Button variant="outlined" onClick={handleAddAssetClick}>
-                               <AddIcon/> Add Asset
-                            </Button>
-                        
-                        </Paper>
-                    </Grid>
-
-                    <Dialog open={isDialogOpen} onClose={handleCloseDialog} align="center" style={{ verticalAlign: 'middle' }}>
-                        <DialogTitle>Add Asset</DialogTitle>
-                        <DialogContent>
-                        {/* customize the content of the dialog here */}
-                        <TextField label="Search Asset" fullWidth style={{ marginTop: '5px' }}/>
-                        {/* Add other components as needed */}
-                        <Button variant="contained" color="primary" style={{ marginTop: '12px' }}>
-                            Add
-                        </Button>
-                        </DialogContent>
-                    </Dialog>
 
 
                 <Grid item md={6} xs={12}>
@@ -136,10 +132,14 @@ const [assetManagmentData, setAssetManagmentData] = useState({ assets: 22, clien
 									<TableRow key={row.id}>
 										<TableCell >{row.name}</TableCell>
 										<TableCell align="center" style={{ verticalAlign: 'middle' }}>
-                                           <CheckCircleIcon/>
+											<Button>
+                                           		<CheckCircleIcon style={{ color:'green' }}/>
+										   </Button>
                                         </TableCell>
                                         <TableCell align="center" style={{ verticalAlign: 'middle' }}>
-                                           <CancelIcon/>
+											<Button>
+                                           		<CancelIcon style={{ color:'red' }}/>
+										   </Button>
                                         </TableCell>
 										
 									</TableRow>
@@ -148,10 +148,29 @@ const [assetManagmentData, setAssetManagmentData] = useState({ assets: 22, clien
 						</Table>
 					</Paper>
 				</Grid>
+				
+				<Dialog open={isDialogOpen} onClose={handleCloseDialog} align="center" style={{ verticalAlign: 'middle' }}>
+                        <DialogTitle>Add Asset</DialogTitle>
+                        <DialogContent>
+                        {/* customize the content of the dialog here */}
+                        <TextField label="Search Asset" fullWidth style={{ marginTop: '5px' }}/>
+                        {/* Add other components as needed */}
+                        <Button variant="contained" color="primary" style={{ marginTop: '12px' }}>
+                            Add
+                        </Button>
+                        </DialogContent>
+                    </Dialog>
 
                 <Grid item md={6} xs={12}>
 					<Paper sx={{ p: 2, display: "flex", flexDirection: "column"}}>
-						<Title>Main Page Assets</Title>
+						
+					<Title style={{ display: 'flex',flexDirection: "row", justifyContent: 'space-between', alignItems: 'left' }}>
+					Main Page Assets
+					<Button variant="outlined" onClick={handleAddAssetClick} style={{ float:'right' }}>
+						<AddIcon />
+					</Button>
+					</Title>
+
 						<Table size='small'>
 							<TableHead>
 								<TableRow>
@@ -164,7 +183,9 @@ const [assetManagmentData, setAssetManagmentData] = useState({ assets: 22, clien
 									<TableRow key={row.id}>
 										<TableCell>{row.name}</TableCell>
 										<TableCell align="center" style={{ verticalAlign: 'middle' }}>
-                                           <DeleteIcon/>
+											<Button>
+                                           		<DeleteIcon style={{ color:'red' }}/>
+										   </Button>
                                         </TableCell>
 										
 									</TableRow>
