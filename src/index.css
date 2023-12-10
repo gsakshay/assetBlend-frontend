@@ -27,3 +27,7 @@ a {
 .MuiFormControl-root {
   width: 100%;
 }
+
+.MuiDivider-root {
+  margin: 2rem !important;
+}
