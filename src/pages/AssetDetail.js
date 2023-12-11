@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
@@ -11,7 +12,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import AssetsChart from "../components/chart/AssetsChart";
-import {  Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 
 const style = {
   position: "absolute",
@@ -26,8 +27,9 @@ const style = {
 };
 
 function AssetDetail() {
-  const userRole = "advisor";
-  
+  const userRole = useSelector((state) => state?.userReducer?.userRole);
+  console.log(userRole);
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -52,7 +54,7 @@ function AssetDetail() {
     console.log("Quantity:", quantity);
     console.log("Date:", date);
 
-    if (userRole === "advisor") {
+    if (userRole === "ADVISOR") {
       console.log("Selected User:", selectedUser);
     }
 
@@ -151,7 +153,7 @@ function AssetDetail() {
                   onChange={(e) => setDate(e.target.value)}
                 />
 
-                {userRole === "advisor" && (
+                {userRole === "ADVISOR" && (
                   <FormControl fullWidth margin="normal">
                     <InputLabel id="user-select-label">User</InputLabel>
                     <Select
