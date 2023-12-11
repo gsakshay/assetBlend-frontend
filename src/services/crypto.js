@@ -9,13 +9,9 @@ export const getAllCrypto = async (query) => {
 	axios.defaults.headers.common[
 		"Authorization"
 	] = `Bearer ${sessionStorage.getItem("accessToken")}`
-	const response = await axios.get(
-		`${CRYPTO_URL}`,
-		{},
-		{
-			params: query,
-		}
-	)
+	const response = await axios.get(`${CRYPTO_URL}`, {
+		params: query,
+	})
 	return response.data
 }
 

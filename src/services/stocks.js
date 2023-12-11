@@ -6,16 +6,14 @@ const STOCKS_URL = `${process.env.REACT_APP_BASE_URL}/api/stocks`
 
 export const getAllStocks = async (query) => {
 	// structure of query should be {name: value}
+	console.log(query, "query here")
+
 	axios.defaults.headers.common[
 		"Authorization"
 	] = `Bearer ${sessionStorage.getItem("accessToken")}`
-	const response = await axios.get(
-		`${STOCKS_URL}`,
-		{},
-		{
-			params: query,
-		}
-	)
+	const response = await axios.get(`${STOCKS_URL}`, {
+		params: query,
+	})
 	return response.data
 }
 

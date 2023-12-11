@@ -23,7 +23,7 @@ const notificationSlice = createSlice({
 				message,
 			}
 		},
-		closeNotification: (state, payload) => {
+		closeNotification: (state, action) => {
 			state.alert = {
 				...state.alert,
 				open: false,
