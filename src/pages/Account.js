@@ -4,6 +4,7 @@ import { Grid } from "@mui/material"
 import React, { useState, useEffect } from "react"
 import Account from "../components/account/Account"
 
+// Redux
 import { useSelector, useDispatch } from "react-redux"
 import { setUserProfile, setAuthenticated } from "../store/userReducer"
 import { setNotification } from "../store/notificationReducer"

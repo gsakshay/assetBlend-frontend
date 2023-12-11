@@ -13,6 +13,14 @@ export const getProfileDetails = async () => {
 	return response.data
 }
 
+export const visitProfileDetails = async (user_id) => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+	const response = await axios.get(`${ACCOUNT_URL}/${user_id}`)
+	return response.data
+}
+
 export const updateProfileDetails = async (userData) => {
 	axios.defaults.headers.common[
 		"Authorization"

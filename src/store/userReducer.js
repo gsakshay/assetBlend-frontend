@@ -14,8 +14,17 @@ const initialState = {
 		phone: "",
 		address: "",
 	},
+	visitProfile: {
+		_id: "",
+		role: "",
+		username: "",
+		firstName: "",
+		lastName: "",
+		email: "",
+	},
 	isAuthenticated: false,
 	rolesAvailable: [],
+	userRole: null,
 	// Registered user details
 	totalInvestedAmount: 0,
 	totalCurrentWorth: 0,
@@ -50,6 +59,15 @@ const userSlice = createSlice({
 		setAuthenticated: (state, action) => {
 			state.isAuthenticated = action.payload
 		},
+		setAuthenticatedUserRole: (state, action) => {
+			state.userRole = action.payload
+		},
+		setVisitorProfile: (state, action) => {
+			state.visitProfile = {
+				...state.visitProfile,
+				...action.payload,
+			}
+		},
 		setUserDashboard: (state, action) => {
 			const {
 				totalInvestedAmount,
@@ -71,5 +89,7 @@ export const {
 	setUserDashboard,
 	setRolesAvailable,
 	setAuthenticated,
+	setVisitorProfile,
+	setAuthenticatedUserRole,
 } = userSlice.actions
 export default userSlice.reducer

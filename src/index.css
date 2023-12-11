@@ -31,3 +31,7 @@ a {
 .MuiDivider-root {
   margin: 2rem !important;
 }
+
+.Mui-disabled {
+  color: black !important;
+}

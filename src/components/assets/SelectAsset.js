@@ -1,7 +1,15 @@
 /** @format */
 
 import { useCallback, useState } from "react"
-import { Box, Card, CardContent, CardHeader, Divider } from "@mui/material"
+import {
+	Box,
+	Button,
+	Card,
+	CardContent,
+	CardHeader,
+	Divider,
+	Grid,
+} from "@mui/material"
 import { styled, alpha } from "@mui/material/styles"
 import InputBase from "@mui/material/InputBase"
 import SearchIcon from "@mui/icons-material/Search"
@@ -59,7 +67,13 @@ const Item = styled(Paper)(({ theme }) => ({
 	border: "1px solid grey",
 }))
 
-export const SelectAssets = ({ assetName }) => {
+export const SelectAssets = ({
+	assetName,
+	details,
+	onSearchChange,
+	search,
+}) => {
+	console.log(details)
 	return (
 		<Card>
 			<CardHeader
@@ -67,31 +81,49 @@ export const SelectAssets = ({ assetName }) => {
 				title={assetName}
 			/>
 			<CardContent sx={{ pt: 2 }}>
-				<Box sx={{ m: 2 }}>
-					<Search>
-						<SearchIconWrapper>
-							<SearchIcon />
-						</SearchIconWrapper>
-						<StyledInputBase
-							placeholder={`Search ${assetName}`}
-							inputProps={{ "aria-label": "search" }}
-						/>
-					</Search>
-				</Box>
+				<Grid container spacing={2}>
+					<Grid item xs={10}>
+						<Box>
+							<Search>
+								<SearchIconWrapper>
+									<SearchIcon />
+								</SearchIconWrapper>
+								<StyledInputBase
+									placeholder={`Search ${assetName}`}
+									inputProps={{ "aria-label": "search" }}
+									value={details?.search}
+									onChange={(e) => onSearchChange(e.target.value)}
+								/>
+							</Search>
+						</Box>
+					</Grid>
+					<Grid item xs={2}>
+						<Box>
+							<Button
+								onClick={search}
+								disabled={!details?.search}
+								fullWidth
+								variant='contained'>
+								Search
+							</Button>
+						</Box>
+					</Grid>
+				</Grid>
 			</CardContent>
 			<Divider />
 			<CardContent sx={{ pt: 2 }}>
-				<Box sx={{ m: 2 }}>
+				<Box
+					style={{
+						overflowY: "auto",
+					}}
+					height={200}
+					sx={{ m: 2 }}>
 					<Stack spacing={2}>
-						<Link to='/app/assets/1'>
-							<Item>Item 1</Item>
-						</Link>
-						<Link to='/app/assets/1'>
-							<Item>Item 1</Item>
-						</Link>
-						<Link to='/app/assets/1'>
-							<Item>Item 1</Item>
-						</Link>
+						{details?.results?.map((asset) => (
+							<Link key={asset?._id} to={`/app/assets/${asset?._id}`}>
+								<Item>{asset?.name}</Item>
+							</Link>
+						))}
 					</Stack>
 				</Box>
 			</CardContent>

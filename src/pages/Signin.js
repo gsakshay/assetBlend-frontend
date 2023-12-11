@@ -16,7 +16,11 @@ import CustomAppBar from "../components/CustomAppBar/CustomAppBar"
 
 // Redux
 import { useSelector, useDispatch } from "react-redux"
-import { setUserProfile, setAuthenticated } from "../store/userReducer"
+import {
+	setUserProfile,
+	setAuthenticated,
+	setAuthenticatedUserRole,
+} from "../store/userReducer"
 import { setNotification } from "../store/notificationReducer"
 // Services
 import { signin } from "../services/auth"
@@ -40,6 +44,7 @@ export default function SignUp() {
 
 			// Store the access token, it will be needed when we make further request calls
 			sessionStorage.setItem("accessToken", response?.accessToken)
+			dispatch(setAuthenticatedUserRole(response?.role))
 			dispatch(
 				setNotification({
 					severity: "success",

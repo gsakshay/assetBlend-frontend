@@ -24,7 +24,7 @@ export const AccountProfileDetails = ({ data, action, updateProfile }) => {
 
 	return (
 		<Card>
-			<CardHeader subheader='The information can be edited' title='Profile' />
+			<CardHeader subheader='Manage your profile' title='Profile' />
 			<CardContent sx={{ pt: 2 }}>
 				<Box sx={{ m: 2 }}>
 					<Grid container spacing={3}>

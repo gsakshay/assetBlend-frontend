@@ -2,6 +2,8 @@
 
 import { Divider, Grid, Typography } from "@mui/material"
 import React from "react"
+import { useNavigate } from "react-router"
+
 import { SelectAssets } from "../components/assets/SelectAsset"
 import AssetsTable from "../components/assets/AssetsTable"
 import PropTypes from "prop-types"
@@ -9,11 +11,23 @@ import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import Box from "@mui/material/Box"
 
+// Redux
+import { useSelector, useDispatch } from "react-redux"
+import {
+	setStocksSearch,
+	setStocksResult,
+	setCryptoSearch,
+	setCryptoResult,
+} from "../store/assetReducer"
+import { setNotification } from "../store/notificationReducer"
+
+// Services
+import { getAllCrypto, getParticularCrypto } from "../services/crypto"
+import { getAllStocks, getParticularStock } from "../services/stocks"
+
 function TabPanel(props) {
 	const { children, value, index, ...other } = props
 
-	console.log("pannel")
-	console.log(children, value, index)
 	return (
 		<div
 			role='tabpanel'
@@ -47,6 +61,39 @@ function Assets() {
 		setValue(newValue)
 	}
 
+	const dispatch = useDispatch()
+	const cryptoDetails = useSelector((state) => state?.assetReducer?.crypto)
+	const stockDetails = useSelector((state) => state?.assetReducer?.stocks)
+
+	const searchChangeCrypto = (value) => dispatch(setCryptoSearch(value))
+	const searchChangeStock = (value) => dispatch(setStocksSearch(value))
+
+	const searchCrypto = async () => {
+		try {
+			// Get the query param
+			const query = {
+				name: stockDetails?.search,
+			}
+			const response = await getAllCrypto(query)
+			dispatch(setCryptoResult(response))
+		} catch (e) {
+			console.log(e, "Could not load the asset")
+		}
+	}
+
+	const searchStock = async () => {
+		try {
+			// Get the query param
+			const query = {
+				name: stockDetails?.search,
+			}
+			const response = await getAllStocks(query)
+			dispatch(setStocksResult(response))
+		} catch (e) {
+			console.log(e, "Could not load the asset")
+		}
+	}
+
 	return (
 		<>
 			<Typography
@@ -61,10 +108,20 @@ function Assets() {
 			<br></br>
 			<Grid container spacing={3}>
 				<Grid item xs={12} sm={6}>
-					<SelectAssets assetName='Stocks' />
+					<SelectAssets
+						details={stockDetails}
+						onSearchChange={searchChangeStock}
+						search={searchStock}
+						assetName='Stocks'
+					/>
 				</Grid>
 				<Grid item xs={12} sm={6}>
-					<SelectAssets assetName='Crypto' />
+					<SelectAssets
+						details={cryptoDetails}
+						onSearchChange={searchChangeCrypto}
+						search={searchCrypto}
+						assetName='Crypto'
+					/>
 				</Grid>
 			</Grid>
 			<Divider />
