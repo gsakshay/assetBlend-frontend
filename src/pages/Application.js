@@ -28,6 +28,7 @@ import { Route, Routes } from "react-router"
 import Dashboard from "./Dashboard"
 import { Container } from "@mui/material"
 import Account from "./Account"
+import ViewOnlyAccount from "./ViewOnlyAccount"
 import { Link, useLocation } from "react-router-dom"
 import Assets from "./Assets"
 
@@ -212,6 +213,11 @@ export default function Application() {
 							path='/account'
 							action={({ params }) => {}}
 							element={<Account />}
+						/>
+						<Route
+							path='/account/:accountId'
+							action={({ params }) => {}}
+							element={<ViewOnlyAccount />}
 						/>
 						<Route
 							path='/assets'
