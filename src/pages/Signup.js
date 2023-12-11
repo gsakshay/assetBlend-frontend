@@ -20,6 +20,7 @@ import {
 	setUserProfile,
 	setAuthenticated,
 	setRolesAvailable,
+	setAuthenticatedUserRole,
 } from "../store/userReducer"
 import { setNotification } from "../store/notificationReducer"
 
@@ -49,16 +50,24 @@ export default function SignUp() {
 	const handleSubmit = async (event) => {
 		event.preventDefault()
 		// Get the data ready
-		let formData = {}
-		formData = {
-			...profileDetails,
+		let formData = {
+			username: profileDetails?.username,
+			firstName: profileDetails?.firstName,
+			lastName: profileDetails?.lastName,
+			email: profileDetails?.email,
+			password: profileDetails?.password,
+			phone: profileDetails?.phone,
+			role: profileDetails?.role,
 		}
 
 		try {
 			const response = await signup(formData)
 
+			console.log(response)
+
 			// Store the access token, it will be needed when we make further request calls
 			sessionStorage.setItem("accessToken", response?.accessToken)
+			dispatch(setAuthenticatedUserRole(response?.role))
 			dispatch(
 				setNotification({
 					severity: "success",
