@@ -1,18 +1,20 @@
 /** @format */
 
-import React, { useState, useEffect } from "react"
-import TextField from "@mui/material/TextField"
-import Grid from "@mui/material/Grid"
-import Paper from "@mui/material/Paper"
-import Title from "../components/Title"
-import Button from "@mui/material/Button"
-import Box from "@mui/material/Box"
-import Typography from "@mui/material/Typography"
-import Modal from "@mui/material/Modal"
-import AssetsChart from "../components/chart/AssetsChart"
-import { Select, MenuItem, FormControl, InputLabel } from "@mui/material"
+import * as React from "react";
+import { useState } from "react";
+import TextField from "@mui/material/TextField";
+import Paper from "@mui/material/Paper";
+import Title from "../components/Title";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import AssetsChart from "../components/chart/AssetsChart";
+import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import  {useEffect } from "react"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import dayjs from "dayjs"
+import Grid from "@mui/material/Grid"
 
 import { user_roles, assets_supported } from "../data/constants"
 import { capitalize } from "../utils/helperFunctions"
@@ -35,9 +37,13 @@ import { ContactSupportOutlined } from "@mui/icons-material"
 import { addNewsAsset } from "../services/admin"
 
 function AssetDetail() {
-	const dispatch = useDispatch()
+  const userRole = useSelector((state) => state?.userReducer?.userRole);
+  console.log(userRole);
 
-	const userRole = useSelector((state) => state?.userReducer?.userRole)
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+	const dispatch = useDispatch()
 
 	const assetSelected = useSelector(
 		(state) => state?.assetReducer?.choosenAsset
@@ -46,6 +52,12 @@ function AssetDetail() {
 		(state) => state?.assetReducer?.cryptoDetail
 	)
 	const stockDetails = useSelector((state) => state?.assetReducer?.stockDetail)
+    if (userRole === "ADVISOR") {
+      console.log("Selected User:", selectedUser);
+    }
+	const [quantity, setQuantity] = useState("")
+	const [date, setDate] = useState("")
+
 
 	console.log(cryptoDetails, stockDetails)
 
@@ -80,8 +92,11 @@ function AssetDetail() {
 
 	const getStockDetails = async () => {
 		try {
+			console.log("response:"+assetId)
 			const response = await getParticularStock(assetId)
+			
 			dispatch(setStockDetail(response))
+			
 		} catch (e) {
 			console.log("Failed to fetch Stock details", e?.response?.data?.message)
 		}
@@ -96,11 +111,44 @@ function AssetDetail() {
 		}
 	}
 
+	const [stockData, setStockData] = useState([]);
+
 	useEffect(() => {
+
+			const fetchStockData = async () => {
+			  try {
+				// Use require to import the local JSON file
+				const jsonData = require("../components/chart/stockdata.json");
+				setStockData(jsonData);
+			  } catch (error) {
+				console.error("Error fetching stock data:", error);
+			  }
+			};
+	  
+		  fetchStockData();
+
 		if (assetSelected === assets_supported.STOCK) {
 			getStockDetails()
 		}
 
+                {userRole === "ADVISOR" && (
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel id="user-select-label">User</InputLabel>
+                    <Select
+                      labelId="user-select-label"
+                      id="user-select"
+                      value={selectedUser}
+                      label="User"
+                      onChange={(e) => setSelectedUser(e.target.value)}
+                    >
+                      {users.map((user) => (
+                        <MenuItem key={user.id} value={user.name}>
+                          {user.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
 		if (assetSelected === assets_supported.CRYPTO) {
 			getCryptoDetails()
 		}
@@ -318,7 +366,7 @@ function AssetDetail() {
 								flexDirection: "column",
 								// height: 240,
 							}}>
-							<AssetsChart />
+							<AssetsChart jsonData={stockData} />
 						</Paper>
 					</Grid>
 				</Grid>

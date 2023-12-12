@@ -119,7 +119,7 @@ function Dashboard() {
 
 	return (
 		<div>
-			{userRole === user_roles.CLIENT && <RegisteredUser />}
+			{userRole === user_roles.USER && <RegisteredUser />}
 			{userRole === user_roles.ADVISOR && <AdvisorDashboard />}
 			{userRole === user_roles.ADMIN && (
 				<AdminDashboard

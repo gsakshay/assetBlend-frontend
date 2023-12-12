@@ -260,7 +260,7 @@ export default function SignUp() {
 												})
 											)
 										}>
-										{allRoles.map((role) => (
+										{allRoles && allRoles.map((role) => (
 											<MenuItem key={role?._id} value={role?._id}>
 												{role?.roleName}
 											</MenuItem>

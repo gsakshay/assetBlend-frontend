@@ -1,8 +1,9 @@
 /** @format */
 
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+
 	profile: {
 		_id: "",
 		role: "",
@@ -38,7 +39,7 @@ const initialState = {
 	totalAssetsOfClients: 0,
 	totalClients: 0,
 	allClients: [],
-
+  
 	// Admin Details
 	adminDashboard: {},
 	advisorRequests: [],
