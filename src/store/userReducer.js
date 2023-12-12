@@ -24,13 +24,14 @@ const initialState = {
 	},
 	isAuthenticated: false,
 	rolesAvailable: [],
-	userRole: null,
+	userRole: "ADMIN",
 	// Registered user details
 	totalInvestedAmount: 0,
 	totalCurrentWorth: 0,
 	numberOfInvestments: 0,
 	recentTransactions: [],
 
+	// All assets of a single user
 	allAssets: [],
 
 	// Advisor Details
@@ -39,9 +40,8 @@ const initialState = {
 	allClients: [],
 
 	// Admin Details
-	totalUsers: 0,
-	totalAssets: 0,
-	advisorReuests: [],
+	adminDashboard: {},
+	advisorRequests: [],
 	mainPageAssets: [],
 }
 
@@ -86,6 +86,15 @@ const userSlice = createSlice({
 			state.recentTransactions = recentTransactions
 		},
 		setAdvisorDashboard: (state, action) => {},
+		setAdminDashboard: (state, action) => {
+			state.adminDashboard = {
+				...state.adminDashboard,
+				...action.payload,
+			}
+		},
+		setAdvisorRequests: (state, action) => {
+			state.advisorRequests = action.payload
+		},
 	},
 })
 
@@ -97,5 +106,7 @@ export const {
 	setVisitorProfile,
 	setAuthenticatedUserRole,
 	setAllAssets,
+	setAdminDashboard,
+	setAdvisorRequests,
 } = userSlice.actions
 export default userSlice.reducer

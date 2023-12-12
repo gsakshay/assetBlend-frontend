@@ -74,7 +74,6 @@ export const SelectAssets = ({
 	search,
 	setChoosen,
 }) => {
-	console.log(details)
 	return (
 		<Card>
 			<CardHeader

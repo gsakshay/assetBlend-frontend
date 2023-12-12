@@ -21,7 +21,7 @@ export const getParticularCrypto = async (cryptoId) => {
 		"Authorization"
 	] = `Bearer ${sessionStorage.getItem("accessToken")}`
 	const response = await axios.get(`${TICKER_URL}/${cryptoId}`, {
-		type: "crypto",
+		params: { type: "crypto" },
 	})
 	return response.data
 }

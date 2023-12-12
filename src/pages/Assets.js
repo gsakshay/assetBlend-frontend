@@ -1,7 +1,7 @@
 /** @format */
 
 import { Divider, Grid, Typography } from "@mui/material"
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router"
 
 import { SelectAssets } from "../components/assets/SelectAsset"
@@ -22,11 +22,13 @@ import {
 	setCryptoResult,
 	setChoosenAsset,
 } from "../store/assetReducer"
+import { setAllAssets } from "../store/userReducer"
 import { setNotification } from "../store/notificationReducer"
 
 // Services
-import { getAllCrypto, getParticularCrypto } from "../services/crypto"
-import { getAllStocks, getParticularStock } from "../services/stocks"
+import { getAllCrypto } from "../services/crypto"
+import { getAllStocks } from "../services/stocks"
+import { getAllAssets, sellAsset as sellAssetService } from "../services/user"
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props
@@ -108,8 +110,41 @@ function Assets() {
 	const allAssets = useSelector((state) => state?.userReducer?.allAssets)
 
 	const sellAsset = async (assetId) => {
-		// TODO
+		// console.log("Sell this asset", assetId)
+		try {
+			const response = await sellAssetService(assetId)
+			getAllAssetsOfUser()
+			dispatch(
+				setNotification({
+					severity: "success",
+					message: "Asset sold successfully",
+				})
+			)
+		} catch (e) {
+			dispatch(
+				setNotification({
+					severity: "error",
+					message: "Could not sell the asset! Please try again later",
+				})
+			)
+		}
 	}
+
+	const getAllAssetsOfUser = async () => {
+		try {
+			const response = await getAllAssets()
+			dispatch(setAllAssets(response))
+		} catch (e) {
+			console.log(e, "Could not load user assets")
+		}
+	}
+
+	// Initially to get all the purchased assets of the user
+	useEffect(() => {
+		if (userRole === user_roles.CLIENT) {
+			getAllAssetsOfUser()
+		}
+	}, [userRole])
 
 	return (
 		<>

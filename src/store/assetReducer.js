@@ -1,7 +1,6 @@
 /** @format */
 
 import { createSlice } from "@reduxjs/toolkit"
-import dayjs from "dayjs"
 
 const initialState = {
 	stocks: {
@@ -17,9 +16,10 @@ const initialState = {
 	cryptoDetail: {},
 	addAsset: {
 		quantity: 1,
-		date: dayjs(),
+		date: "",
 		user: {},
 	},
+	newsAssets: [],
 }
 
 const assetReducer = createSlice({
@@ -53,6 +53,9 @@ const assetReducer = createSlice({
 				...action.payload,
 			}
 		},
+		setNewsAssets: (state, action) => {
+			state.newsAssets = action.payload
+		},
 	},
 })
 
@@ -65,5 +68,6 @@ export const {
 	setCryptoDetail,
 	setChoosenAsset,
 	setAddAsset,
+	setNewsAssets,
 } = assetReducer.actions
 export default assetReducer.reducer

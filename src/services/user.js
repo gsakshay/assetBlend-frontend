@@ -48,3 +48,13 @@ export const addAsset = async (assetData) => {
 	const response = await axios.post(`${USER_URL}/assets`, assetData)
 	return response.data
 }
+
+// Sell an aasset
+
+export const sellAsset = async (assetId) => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+	const response = await axios.post(`${USER_URL}/assets/${assetId}`)
+	return response.data
+}

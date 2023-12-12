@@ -32,13 +32,12 @@ import { getParticularStock } from "../services/stocks"
 import { addAsset } from "../services/user"
 import { useParams } from "react-router"
 import { ContactSupportOutlined } from "@mui/icons-material"
+import { addNewsAsset } from "../services/admin"
 
 function AssetDetail() {
 	const dispatch = useDispatch()
 
 	const userRole = useSelector((state) => state?.userReducer?.userRole)
-
-	console.log(userRole, "User role")
 
 	const assetSelected = useSelector(
 		(state) => state?.assetReducer?.choosenAsset
@@ -47,14 +46,15 @@ function AssetDetail() {
 		(state) => state?.assetReducer?.cryptoDetail
 	)
 	const stockDetails = useSelector((state) => state?.assetReducer?.stockDetail)
+
+	console.log(cryptoDetails, stockDetails)
+
 	const addAssetDetails = useSelector((state) => state?.assetReducer?.addAsset)
 
-	const [open, setOpen] = React.useState(false)
-	const handleOpen = () => setOpen(true)
-	const handleClose = () => setOpen(false)
+	const [openAddAssetModel, setOpenAddAssetModel] = useState(false)
+	const handleOpenAddAssetModel = () => setOpenAddAssetModel(true)
+	const handleCloseAddAssetModel = () => setOpenAddAssetModel(false)
 
-	const [quantity, setQuantity] = useState("")
-	const [date, setDate] = useState("")
 	const [selectedUser, setSelectedUser] = useState("")
 
 	const users = [
@@ -83,7 +83,7 @@ function AssetDetail() {
 			const response = await getParticularStock(assetId)
 			dispatch(setStockDetail(response))
 		} catch (e) {
-			console.log("Failed to fetch Stock details", e)
+			console.log("Failed to fetch Stock details", e?.response?.data?.message)
 		}
 	}
 
@@ -92,7 +92,7 @@ function AssetDetail() {
 			const response = await getParticularCrypto(assetId)
 			dispatch(setCryptoDetail(response))
 		} catch (e) {
-			console.log("Failed to fetch Crypto details", e)
+			console.log("Failed to fetch Crypto details", e?.response?.data?.message)
 		}
 	}
 
@@ -108,35 +108,87 @@ function AssetDetail() {
 
 	const addNewAsset = async () => {
 		const formData = {
-			assetData: {
-				assetId: assetId,
-				quantity: addAssetDetails.quantity,
-				datePurchased: dayjs(addAssetDetails?.date).format("YYYY-MM-DD"),
-				type: assetSelected === assets_supported.STOCK ? "stock" : "crypto",
-			},
+			assetId: assetId,
+			quantity: addAssetDetails.quantity,
+			datePurchased: dayjs(addAssetDetails?.date).format("YYYY-MM-DD"),
+			type: assetSelected === assets_supported.STOCK ? "stock" : "crypto",
 		}
-		console.log("Adding a new asset")
 		try {
 			const response = await addAsset(formData)
-			console.log(response)
+			// TODO: update the store with response to reduce the api calls - Future update
+			// console.log(response)
+			dispatch(
+				setNotification({
+					severity: "success",
+					message: "Added asset successfully!",
+				})
+			)
+			handleCloseAddAssetModel()
 		} catch (e) {
-			console.log(e)
+			dispatch(
+				setNotification({
+					severity: "error",
+					message: "Could not add asset! Please try again",
+				})
+			)
+		}
+	}
+
+	// Handling Admin Features
+
+	const addAssetToNews = async () => {
+		const stocks = []
+		const cryptos = []
+
+		if (assetSelected === assets_supported.STOCK) {
+			stocks.push(assetId)
+		} else {
+			cryptos.push(assetId)
+		}
+
+		const formData = {
+			crypto: cryptos,
+			stock: stocks,
+		}
+		try {
+			const response = await addNewsAsset(formData)
+			console.log(response, "Response of adding an asset")
+			dispatch(
+				setNotification({
+					severity: "success",
+					message: "Added asset to NEWS successfully!",
+				})
+			)
+			if (assetSelected === assets_supported.STOCK) {
+				getStockDetails()
+			}
+
+			if (assetSelected === assets_supported.CRYPTO) {
+				getCryptoDetails()
+			}
+		} catch (e) {
+			dispatch(
+				setNotification({
+					severity: "error",
+					message: e?.response?.data?.message,
+				})
+			)
 		}
 	}
 
 	return (
 		<div>
 			<Modal
-				open={open}
-				onClose={handleClose}
+				open={openAddAssetModel}
+				onClose={handleCloseAddAssetModel}
 				aria-labelledby='modal-title'
 				aria-describedby='modal-description'>
 				<Box sx={style}>
 					<Typography id='modal-title' variant='h6' component='h2'>
 						Add{" "}
 						{assetSelected === assets_supported.STOCK
-							? stockDetails?.name
-							: cryptoDetails?.name}
+							? stockDetails?.asset?.name
+							: cryptoDetails?.asset?.name}
 					</Typography>
 
 					<TextField
@@ -155,7 +207,7 @@ function AssetDetail() {
 
 					<DatePicker
 						label='Date purchased'
-						value={addAssetDetails?.date}
+						value={dayjs(addAssetDetails?.date)}
 						onChange={(newDate) =>
 							dispatch(setAddAsset({ ...addAssetDetails, date: newDate }))
 						}
@@ -210,27 +262,48 @@ function AssetDetail() {
 									<Title>Name</Title>
 									<Typography component='p' variant='h5'>
 										{assetSelected === assets_supported.STOCK
-											? stockDetails?.name
-											: cryptoDetails?.name}
+											? stockDetails?.asset?.name
+											: cryptoDetails?.asset?.name}
 									</Typography>
 								</Grid>
 								<Grid item xs={5}>
 									<Title>Reporting Currency</Title>
 									<Typography component='p' variant='h5'>
 										{assetSelected === assets_supported.STOCK
-											? stockDetails?.reportingCurrency?.toUpperCase()
-											: cryptoDetails?.quoteCurrency?.toUpperCase()}
+											? stockDetails?.asset?.reportingCurrency?.toUpperCase()
+											: cryptoDetails?.asset?.quoteCurrency?.toUpperCase()}
 										{}
 									</Typography>
 								</Grid>
 								<Grid item xs={2}>
-									<Button
-										onClick={handleOpen}
-										variant='contained'
-										color='primary'
-										sx={{ mt: 1, mb: 0 }}>
-										Add Asset
-									</Button>
+									{userRole === user_roles.ADMIN ? (
+										<Button
+											onClick={addAssetToNews}
+											variant='contained'
+											color='primary'
+											disabled={
+												assetSelected === assets_supported?.STOCK
+													? stockDetails?.asset?.isNews
+													: cryptoDetails?.asset?.isNews
+											}
+											sx={{ mt: 1, mb: 0 }}>
+											{(
+												assetSelected === assets_supported?.STOCK
+													? stockDetails?.asset?.isNews
+													: cryptoDetails?.asset?.isNews
+											)
+												? `Asset is already in NEWS`
+												: `Add Asset to News`}
+										</Button>
+									) : (
+										<Button
+											onClick={handleOpenAddAssetModel}
+											variant='contained'
+											color='primary'
+											sx={{ mt: 1, mb: 0 }}>
+											Add Asset
+										</Button>
+									)}
 								</Grid>
 							</Grid>
 						</Paper>
