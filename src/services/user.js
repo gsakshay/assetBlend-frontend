@@ -38,3 +38,13 @@ export const getAllAssets = async () => {
 	const response = await axios.get(`${USER_URL}/assets`)
 	return response.data
 }
+
+// Add an asset for the user
+
+export const addAsset = async (assetData) => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+	const response = await axios.post(`${USER_URL}/assets`, assetData)
+	return response.data
+}

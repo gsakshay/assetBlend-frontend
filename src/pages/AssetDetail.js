@@ -11,25 +11,35 @@ import Typography from "@mui/material/Typography"
 import Modal from "@mui/material/Modal"
 import AssetsChart from "../components/chart/AssetsChart"
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material"
+import { DatePicker } from "@mui/x-date-pickers/DatePicker"
+import dayjs from "dayjs"
 
-import { assets_supported } from "../data/constants"
+import { user_roles, assets_supported } from "../data/constants"
 import { capitalize } from "../utils/helperFunctions"
+
 // Redux
 import { useSelector, useDispatch } from "react-redux"
 import { setNotification } from "../store/notificationReducer"
-
-import { setStockDetail, setCryptoDetail } from "../store/assetReducer"
+import {
+	setStockDetail,
+	setCryptoDetail,
+	setAddAsset,
+} from "../store/assetReducer"
 
 // Services
 import { getParticularCrypto } from "../services/crypto"
 import { getParticularStock } from "../services/stocks"
+import { addAsset } from "../services/user"
 import { useParams } from "react-router"
 import { ContactSupportOutlined } from "@mui/icons-material"
 
 function AssetDetail() {
 	const dispatch = useDispatch()
 
-	const userRole = "advisor"
+	const userRole = useSelector((state) => state?.userReducer?.userRole)
+
+	console.log(userRole, "User role")
+
 	const assetSelected = useSelector(
 		(state) => state?.assetReducer?.choosenAsset
 	)
@@ -37,6 +47,7 @@ function AssetDetail() {
 		(state) => state?.assetReducer?.cryptoDetail
 	)
 	const stockDetails = useSelector((state) => state?.assetReducer?.stockDetail)
+	const addAssetDetails = useSelector((state) => state?.assetReducer?.addAsset)
 
 	const [open, setOpen] = React.useState(false)
 	const handleOpen = () => setOpen(true)
@@ -51,24 +62,6 @@ function AssetDetail() {
 		{ id: 2, name: "User 2" },
 		{ id: 3, name: "User 3" },
 	]
-
-	const stockData = {
-		name: "Amazon",
-	}
-
-	const handleSubmit = () => {
-		// Handle the submission logic here
-		console.log("Stock Name:", stockData.name)
-		console.log("Quantity:", quantity)
-		console.log("Date:", date)
-
-		if (userRole === "advisor") {
-			console.log("Selected User:", selectedUser)
-		}
-
-		// Close the modal after submission
-		handleClose()
-	}
 
 	const style = {
 		position: "absolute",
@@ -113,7 +106,23 @@ function AssetDetail() {
 		}
 	}, [assetSelected])
 
-	console.log(stockDetails, "Stock details")
+	const addNewAsset = async () => {
+		const formData = {
+			assetData: {
+				assetId: assetId,
+				quantity: addAssetDetails.quantity,
+				datePurchased: dayjs(addAssetDetails?.date).format("YYYY-MM-DD"),
+				type: assetSelected === assets_supported.STOCK ? "stock" : "crypto",
+			},
+		}
+		console.log("Adding a new asset")
+		try {
+			const response = await addAsset(formData)
+			console.log(response)
+		} catch (e) {
+			console.log(e)
+		}
+	}
 
 	return (
 		<div>
@@ -124,7 +133,10 @@ function AssetDetail() {
 				aria-describedby='modal-description'>
 				<Box sx={style}>
 					<Typography id='modal-title' variant='h6' component='h2'>
-						{stockData.name}
+						Add{" "}
+						{assetSelected === assets_supported.STOCK
+							? stockDetails?.name
+							: cryptoDetails?.name}
 					</Typography>
 
 					<TextField
@@ -133,30 +145,29 @@ function AssetDetail() {
 						type='number'
 						fullWidth
 						margin='normal'
-						value={quantity}
-						onChange={(e) => setQuantity(e.target.value)}
+						value={addAssetDetails?.quantity}
+						onChange={(e) =>
+							dispatch(
+								setAddAsset({ ...addAssetDetails, quantity: e.target.value })
+							)
+						}
 					/>
 
-					<TextField
-						id='date'
-						label='Date'
-						type='date'
-						fullWidth
-						margin='normal'
-						InputLabelProps={{
-							shrink: true,
-						}}
-						value={date}
-						onChange={(e) => setDate(e.target.value)}
+					<DatePicker
+						label='Date purchased'
+						value={addAssetDetails?.date}
+						onChange={(newDate) =>
+							dispatch(setAddAsset({ ...addAssetDetails, date: newDate }))
+						}
 					/>
 
-					{userRole === "advisor" && (
+					{userRole === user_roles.ADVISOR && (
 						<FormControl fullWidth margin='normal'>
 							<InputLabel id='user-select-label'>User</InputLabel>
 							<Select
 								labelId='user-select-label'
 								id='user-select'
-								value={selectedUser}
+								value={addAssetDetails?.user?._id}
 								label='User'
 								onChange={(e) => setSelectedUser(e.target.value)}>
 								{users.map((user) => (
@@ -172,7 +183,14 @@ function AssetDetail() {
 						variant='contained'
 						color='primary'
 						fullWidth
-						onClick={handleSubmit}
+						onClick={addNewAsset}
+						disabled={
+							userRole === user_roles.CLIENT
+								? !addAssetDetails?.quantity || !addAssetDetails?.date
+								: !addAssetDetails?.quantity ||
+								  !addAssetDetails?.date ||
+								  !addAssetDetails?.user?._id
+						}
 						sx={{ mt: 2 }}>
 						Confirm
 					</Button>
