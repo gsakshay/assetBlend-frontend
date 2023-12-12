@@ -18,9 +18,10 @@ import { useNavigate } from "react-router"
 
 function Dashboard() {
 	const dispatch = useDispatch()
-	const userRole = "ADMIN"//useSelector((state) => state?.userReducer?.userRole)
-	console.log(userRole, "user")
+	const userRole = useSelector((state) => state?.userReducer?.userRole)
 	const navigate = useNavigate()
+
+	console.log(userRole, "ABCCCC")
 
 	return (
 		<div>

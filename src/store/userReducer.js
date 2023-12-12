@@ -35,6 +35,12 @@ const initialState = {
   totalAssetsOfClients: 0,
   totalClients: 0,
   topClients: [],
+	allAssets: [],
+
+	// Advisor Details
+	totalAssetsOfClients: 0,
+	totalClients: 0,
+	allClients: [],
 
   // Admin Details
   totalUsers: 0,
@@ -93,3 +99,4 @@ export const {
   setAuthenticatedUserRole,
 } = userSlice.actions;
 export default userSlice.reducer;
+	
