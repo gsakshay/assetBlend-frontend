@@ -7,7 +7,6 @@ const TICKER_URL = `${process.env.REACT_APP_BASE_URL}/api/ticker`
 
 export const getAllStocks = async (query) => {
 	// structure of query should be {name: value}
-	console.log(query, "query here")
 
 	axios.defaults.headers.common[
 		"Authorization"
@@ -23,7 +22,7 @@ export const getParticularStock = async (stockId) => {
 		"Authorization"
 	] = `Bearer ${sessionStorage.getItem("accessToken")}`
 	const response = await axios.get(`${TICKER_URL}/${stockId}`, {
-		type: "stock",
+		params: { type: "stock" },
 	})
 	return response.data
 }

@@ -167,16 +167,14 @@ export default function Application() {
 							<ListItemText primary='Dashboard' />
 						</ListItemButton>
 					</Link>
-					{userRole !== user_roles.ADMIN && (
-						<Link to='/app/assets'>
-							<ListItemButton>
-								<ListItemIcon>
-									<LayersIcon />
-								</ListItemIcon>
-								<ListItemText primary='Assets' />
-							</ListItemButton>
-						</Link>
-					)}
+					<Link to='/app/assets'>
+						<ListItemButton>
+							<ListItemIcon>
+								<LayersIcon />
+							</ListItemIcon>
+							<ListItemText primary='Assets' />
+						</ListItemButton>
+					</Link>
 					{userRole !== user_roles.ADMIN && (
 						<Link to='/app/advisor'>
 							<ListItemButton>
