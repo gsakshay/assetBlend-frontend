@@ -59,7 +59,7 @@ const columns = [
 ]
 
 const rows = Array.from({ length: 200 }, (_, index) => {
-	const randomSelection = sample[Math.floor(Math.random() * sample.length)]
+	const randomSelection = sample[Math.floor(Math.random() * sample?.length)]
 	return createData(index, ...randomSelection)
 })
 
@@ -96,7 +96,7 @@ function fixedHeaderContent() {
 				</TableCell>
 			))}
 			<TableCell
-				key={columns.length}
+				key={columns?.length}
 				variant='head'
 				align='center'
 				style={{ width: 90 }}
@@ -126,7 +126,7 @@ function rowContent(_index, row) {
 	)
 }
 
-export default function AssetsTable() {
+export default function AssetsTable({ data, sell }) {
 	return (
 		<Paper style={{ height: 400, width: "100%" }}>
 			<TableVirtuoso

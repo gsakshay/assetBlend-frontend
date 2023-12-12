@@ -11,6 +11,9 @@ const initialState = {
 		search: "",
 		results: [],
 	},
+	choosenAsset: null,
+	stockDetail: {},
+	cryptoDetail: {},
 }
 
 const assetReducer = createSlice({
@@ -29,6 +32,15 @@ const assetReducer = createSlice({
 		setCryptoResult: (state, action) => {
 			state.crypto.results = action.payload
 		},
+		setStockDetail: (state, action) => {
+			state.stockDetail = action.payload
+		},
+		setCryptoDetail: (state, action) => {
+			state.cryptoDetail = action.payload
+		},
+		setChoosenAsset: (state, action) => {
+			state.choosenAsset = action.payload
+		},
 	},
 })
 
@@ -37,5 +49,8 @@ export const {
 	setStocksResult,
 	setCryptoSearch,
 	setCryptoResult,
+	setStockDetail,
+	setCryptoDetail,
+	setChoosenAsset,
 } = assetReducer.actions
 export default assetReducer.reducer

@@ -4,3 +4,8 @@ export const user_roles = {
 	ADVISOR: "ADVISOR",
 	ADMIN: "ADMIN",
 }
+
+export const assets_supported = {
+	STOCK: "STOCK",
+	CRYPTO: "CRYPTO",
+}

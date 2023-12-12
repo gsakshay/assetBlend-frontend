@@ -38,6 +38,9 @@ import Advisor from "./Advisor"
 import UsersListPage from "../components/Admin/UsersList"
 import AdvisorListPage from "../components/Admin/AdvisorList"
 
+import { useSelector, useDispatch } from "react-redux"
+import { user_roles } from "../data/constants"
+
 const drawerWidth = 240
 
 const AppBar = styled(MuiAppBar, {
@@ -95,8 +98,10 @@ export default function Application() {
 
 	useEffect(() => {
 		const currentPath = pathname.split("/")
-		setPageName(currentPath[currentPath.length - 1])
+		setPageName(currentPath[currentPath?.length - 1])
 	}, [pathname])
+
+	const userRole = useSelector((state) => state?.userReducer?.userRole)
 
 	return (
 		<Box sx={{ display: "flex" }}>
@@ -162,31 +167,26 @@ export default function Application() {
 							<ListItemText primary='Dashboard' />
 						</ListItemButton>
 					</Link>
-					<Link to='/app/assets'>
-						<ListItemButton>
-							<ListItemIcon>
-								<LayersIcon />
-							</ListItemIcon>
-							<ListItemText primary='Assets' />
-						</ListItemButton>
-					</Link>
-					<Link to='/app/advisor'>
-						<ListItemButton>
-							<ListItemIcon>
-								<PeopleIcon />
-							</ListItemIcon>
-							<ListItemText primary='Advisor' />
-						</ListItemButton>
-					</Link>
-					{/* <Link to='/app/transactions'>
-						<ListItemButton>
-							<ListItemIcon>
-								<BarChartIcon />
-							</ListItemIcon>
-							<ListItemText primary='Transaction' />
-						</ListItemButton>
-					</Link> */}
-
+					{userRole !== user_roles.ADMIN && (
+						<Link to='/app/assets'>
+							<ListItemButton>
+								<ListItemIcon>
+									<LayersIcon />
+								</ListItemIcon>
+								<ListItemText primary='Assets' />
+							</ListItemButton>
+						</Link>
+					)}
+					{userRole !== user_roles.ADMIN && (
+						<Link to='/app/advisor'>
+							<ListItemButton>
+								<ListItemIcon>
+									<PeopleIcon />
+								</ListItemIcon>
+								<ListItemText primary='Advisor' />
+							</ListItemButton>
+						</Link>
+					)}
 					<Divider sx={{ my: 1 }} />
 				</List>
 			</Drawer>

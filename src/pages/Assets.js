@@ -11,6 +11,8 @@ import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import Box from "@mui/material/Box"
 
+import { user_roles, assets_supported } from "../data/constants"
+
 // Redux
 import { useSelector, useDispatch } from "react-redux"
 import {
@@ -18,6 +20,7 @@ import {
 	setStocksResult,
 	setCryptoSearch,
 	setCryptoResult,
+	setChoosenAsset,
 } from "../store/assetReducer"
 import { setNotification } from "../store/notificationReducer"
 
@@ -68,6 +71,11 @@ function Assets() {
 	const searchChangeCrypto = (value) => dispatch(setCryptoSearch(value))
 	const searchChangeStock = (value) => dispatch(setStocksSearch(value))
 
+	const setChoosenAssetAsStock = () =>
+		dispatch(setChoosenAsset(assets_supported.STOCK))
+	const setChoosenAssetAsCrypto = () =>
+		dispatch(setChoosenAsset(assets_supported.CRYPTO))
+
 	const searchCrypto = async () => {
 		try {
 			// Get the query param
@@ -94,6 +102,15 @@ function Assets() {
 		}
 	}
 
+	const userRole = useSelector((state) => state?.userReducer?.userRole)
+
+	// Role based division - CLIENT
+	const allAssets = useSelector((state) => state?.userReducer?.allAssets)
+
+	const sellAsset = async (assetId) => {
+		// TODO
+	}
+
 	return (
 		<>
 			<Typography
@@ -113,6 +130,7 @@ function Assets() {
 						onSearchChange={searchChangeStock}
 						search={searchStock}
 						assetName='Stocks'
+						setChoosen={setChoosenAssetAsStock}
 					/>
 				</Grid>
 				<Grid item xs={12} sm={6}>
@@ -121,66 +139,76 @@ function Assets() {
 						onSearchChange={searchChangeCrypto}
 						search={searchCrypto}
 						assetName='Crypto'
+						setChoosen={setChoosenAssetAsCrypto}
 					/>
 				</Grid>
 			</Grid>
 			<Divider />
-			<Typography
-				component='h1'
-				variant='h4'
-				align='center'
-				color='text.primary'
-				gutterBottom>
-				Manage Assets
-			</Typography>
-			<br></br>
-			<br></br>
-			<AssetsTable />
-			<Divider />
-			<Typography
-				component='h1'
-				variant='h4'
-				align='center'
-				color='text.primary'
-				gutterBottom>
-				Manage Assets (For Advisors)
-			</Typography>
-			<br></br>
-			<br></br>
-			<Box
-				sx={{
-					flexGrow: 1,
-					bgcolor: "background.paper",
-					display: "flex",
-					width: "100%",
-				}}>
-				<Tabs
-					orientation='vertical'
-					variant='scrollable'
-					value={value}
-					onChange={handleChange}
-					sx={{ borderRight: 1, borderColor: "divider" }}>
-					<Tab sx={{ p: 3, textAlign: "center" }} label='User 1' />
-					<Tab sx={{ p: 3 }} label='User 2' />
-				</Tabs>
 
-				<TabPanel
-					style={{
-						width: "100%",
-					}}
-					value={value}
-					index={0}>
-					<AssetsTable />
-				</TabPanel>
-				<TabPanel
-					style={{
-						width: "100%",
-					}}
-					value={value}
-					index={1}>
-					<AssetsTable />
-				</TabPanel>
-			</Box>
+			{userRole === user_roles.CLIENT && (
+				<>
+					<Typography
+						component='h1'
+						variant='h4'
+						align='center'
+						color='text.primary'
+						gutterBottom>
+						Manage Assets
+					</Typography>
+					<br></br>
+					<br></br>
+					<AssetsTable data={allAssets} sell={sellAsset} />
+				</>
+			)}
+
+			{userRole === user_roles.ADVISOR && (
+				<>
+					<Typography
+						component='h1'
+						variant='h4'
+						align='center'
+						color='text.primary'
+						gutterBottom>
+						Manage Assets (For Advisors)
+					</Typography>
+					<br></br>
+					<br></br>
+					<Box
+						sx={{
+							flexGrow: 1,
+							bgcolor: "background.paper",
+							display: "flex",
+							width: "100%",
+						}}>
+						<Tabs
+							orientation='vertical'
+							variant='scrollable'
+							value={value}
+							onChange={handleChange}
+							sx={{ borderRight: 1, borderColor: "divider" }}>
+							<Tab sx={{ p: 3, textAlign: "center" }} label='User 1' />
+							<Tab sx={{ p: 3 }} label='User 2' />
+						</Tabs>
+
+						<TabPanel
+							style={{
+								width: "100%",
+							}}
+							value={value}
+							index={0}>
+							<AssetsTable />
+						</TabPanel>
+						<TabPanel
+							style={{
+								width: "100%",
+							}}
+							value={value}
+							index={1}>
+							<AssetsTable />
+						</TabPanel>
+					</Box>
+				</>
+			)}
 		</>
 	)
 }

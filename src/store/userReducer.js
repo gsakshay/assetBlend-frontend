@@ -31,10 +31,12 @@ const initialState = {
 	numberOfInvestments: 0,
 	recentTransactions: [],
 
+	allAssets: [],
+
 	// Advisor Details
 	totalAssetsOfClients: 0,
 	totalClients: 0,
-	topClients: [],
+	allClients: [],
 
 	// Admin Details
 	totalUsers: 0,
@@ -68,6 +70,9 @@ const userSlice = createSlice({
 				...action.payload,
 			}
 		},
+		setAllAssets: (state, action) => {
+			state.allAssets = action.payload
+		},
 		setUserDashboard: (state, action) => {
 			const {
 				totalInvestedAmount,
@@ -91,5 +96,6 @@ export const {
 	setAuthenticated,
 	setVisitorProfile,
 	setAuthenticatedUserRole,
+	setAllAssets,
 } = userSlice.actions
 export default userSlice.reducer

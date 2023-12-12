@@ -28,3 +28,13 @@ export const updateProfileDetails = async (userData) => {
 	const response = await axios.post(`${ACCOUNT_URL}/editDetails`, userData)
 	return response.data
 }
+
+// Get all assets for the user:
+
+export const getAllAssets = async () => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+	const response = await axios.get(`${USER_URL}/assets`)
+	return response.data
+}
