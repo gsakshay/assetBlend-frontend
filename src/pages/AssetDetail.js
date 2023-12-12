@@ -63,56 +63,6 @@ function AssetDetail() {
 	const [date, setDate] = useState("")
 	const [selectedUser, setSelectedUser] = useState("")
 
-	const jsonData = [
-		{
-			"date": "2025-11-14T00:00:00.000Z",
-            "close": 200,
-            "high": 188.11,
-            "low": 186.3,
-            "open": 187.7,
-            "volume": 60108378,
-            "adjClose": 187.44,
-            "adjHigh": 188.11,
-            "adjLow": 186.3,
-            "adjOpen": 187.7,
-            "adjVolume": 60108378,
-            "divCash": 0,
-            "splitFactor": 1
-		},
-
-
-		{
-			"date": "2024-11-14T00:00:00.000Z",
-            "close": 300,
-            "high": 188.11,
-            "low": 186.3,
-            "open": 187.7,
-            "volume": 60108378,
-            "adjClose": 187.44,
-            "adjHigh": 188.11,
-            "adjLow": 186.3,
-            "adjOpen": 187.7,
-            "adjVolume": 60108378,
-            "divCash": 0,
-            "splitFactor": 1
-		},
-
-		{
-			"date": "2023-11-14T00:00:00.000Z",
-            "close": 400,
-            "high": 188.11,
-            "low": 186.3,
-            "open": 187.7,
-            "volume": 60108378,
-            "adjClose": 187.44,
-            "adjHigh": 188.11,
-            "adjLow": 186.3,
-            "adjOpen": 187.7,
-            "adjVolume": 60108378,
-            "divCash": 0,
-            "splitFactor": 1
-		}
-	]
 	const users = [
 		{ id: 1, name: "User 1" },
 		{ id: 2, name: "User 2" },
@@ -155,7 +105,22 @@ function AssetDetail() {
 		}
 	}
 
+	const [stockData, setStockData] = useState([]);
+
 	useEffect(() => {
+
+			const fetchStockData = async () => {
+			  try {
+				// Use require to import the local JSON file
+				const jsonData = require("../components/chart/stockdata.json");
+				setStockData(jsonData);
+			  } catch (error) {
+				console.error("Error fetching stock data:", error);
+			  }
+			};
+	  
+		  fetchStockData();
+
 		if (assetSelected === assets_supported.STOCK) {
 			getStockDetails()
 		}
@@ -322,7 +287,7 @@ function AssetDetail() {
 								flexDirection: "column",
 								// height: 240,
 							}}>
-							<AssetsChart jsonData={jsonData} />
+							<AssetsChart jsonData={stockData} />
 						</Paper>
 					</Grid>
 				</Grid>
