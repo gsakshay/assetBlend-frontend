@@ -190,14 +190,19 @@ function AssetDetail() {
 							<Grid alignItems='center' container spacing={2}>
 								<Grid item xs={5}>
 									<Title>Name</Title>
-									<Typography component='p' variant='h4'>
-										{stockDetails?.name}
+									<Typography component='p' variant='h5'>
+										{assetSelected === assets_supported.STOCK
+											? stockDetails?.name
+											: cryptoDetails?.name}
 									</Typography>
 								</Grid>
 								<Grid item xs={5}>
 									<Title>Reporting Currency</Title>
-									<Typography component='p' variant='h4'>
-										{stockDetails?.reportingCurrency?.toUpperCase()}
+									<Typography component='p' variant='h5'>
+										{assetSelected === assets_supported.STOCK
+											? stockDetails?.reportingCurrency?.toUpperCase()
+											: cryptoDetails?.quoteCurrency?.toUpperCase()}
+										{}
 									</Typography>
 								</Grid>
 								<Grid item xs={2}>
