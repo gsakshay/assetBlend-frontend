@@ -69,6 +69,7 @@ function Assets() {
 	const stockDetails = useSelector((state) => state?.assetReducer?.stocks)
 
 	const searchChangeCrypto = (value) => dispatch(setCryptoSearch(value))
+	console.log("Temp:"+value)
 	const searchChangeStock = (value) => dispatch(setStocksSearch(value))
 
 	const setChoosenAssetAsStock = () =>

@@ -53,6 +53,7 @@ function AssetDetail() {
 		(state) => state?.assetReducer?.cryptoDetail
 	)
 	const stockDetails = useSelector((state) => state?.assetReducer?.stockDetail)
+	console.log("!!:"+stockDetails)
 	const addAssetDetails = useSelector((state) => state?.assetReducer?.addAsset)
 
     if (userRole === "ADVISOR") {
@@ -62,6 +63,56 @@ function AssetDetail() {
 	const [date, setDate] = useState("")
 	const [selectedUser, setSelectedUser] = useState("")
 
+	const jsonData = [
+		{
+			"date": "2025-11-14T00:00:00.000Z",
+            "close": 200,
+            "high": 188.11,
+            "low": 186.3,
+            "open": 187.7,
+            "volume": 60108378,
+            "adjClose": 187.44,
+            "adjHigh": 188.11,
+            "adjLow": 186.3,
+            "adjOpen": 187.7,
+            "adjVolume": 60108378,
+            "divCash": 0,
+            "splitFactor": 1
+		},
+
+
+		{
+			"date": "2024-11-14T00:00:00.000Z",
+            "close": 300,
+            "high": 188.11,
+            "low": 186.3,
+            "open": 187.7,
+            "volume": 60108378,
+            "adjClose": 187.44,
+            "adjHigh": 188.11,
+            "adjLow": 186.3,
+            "adjOpen": 187.7,
+            "adjVolume": 60108378,
+            "divCash": 0,
+            "splitFactor": 1
+		},
+
+		{
+			"date": "2023-11-14T00:00:00.000Z",
+            "close": 400,
+            "high": 188.11,
+            "low": 186.3,
+            "open": 187.7,
+            "volume": 60108378,
+            "adjClose": 187.44,
+            "adjHigh": 188.11,
+            "adjLow": 186.3,
+            "adjOpen": 187.7,
+            "adjVolume": 60108378,
+            "divCash": 0,
+            "splitFactor": 1
+		}
+	]
 	const users = [
 		{ id: 1, name: "User 1" },
 		{ id: 2, name: "User 2" },
@@ -85,8 +136,11 @@ function AssetDetail() {
 
 	const getStockDetails = async () => {
 		try {
+			console.log("response:"+assetId)
 			const response = await getParticularStock(assetId)
+			
 			dispatch(setStockDetail(response))
+			
 		} catch (e) {
 			console.log("Failed to fetch Stock details", e)
 		}
@@ -268,7 +322,7 @@ function AssetDetail() {
 								flexDirection: "column",
 								// height: 240,
 							}}>
-							<AssetsChart />
+							<AssetsChart jsonData={jsonData} />
 						</Paper>
 					</Grid>
 				</Grid>
