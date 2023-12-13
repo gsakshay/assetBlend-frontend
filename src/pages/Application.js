@@ -175,7 +175,7 @@ export default function Application() {
 							<ListItemText primary='Assets' />
 						</ListItemButton>
 					</Link>
-					{userRole !== user_roles.ADMIN && (
+					{userRole === user_roles.CLIENT && (
 						<Link to='/app/advisor'>
 							<ListItemButton>
 								<ListItemIcon>

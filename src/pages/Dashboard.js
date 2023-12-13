@@ -20,7 +20,6 @@ import {
 	getDashboardData as getAdminDashboard,
 	approveAdvisorRequest as approveAdvisorRequestService,
 	rejectAdvisorRequest as rejectAdvisorRequestService,
-	addNewsAsset,
 } from "../services/admin"
 import { getNewsAssets } from "../services/assets"
 import { useNavigate } from "react-router"
