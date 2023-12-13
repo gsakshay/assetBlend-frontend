@@ -72,8 +72,8 @@ export const SelectAssets = ({
 	details,
 	onSearchChange,
 	search,
+	setChoosen,
 }) => {
-	console.log(details)
 	return (
 		<Card>
 			<CardHeader
@@ -120,7 +120,10 @@ export const SelectAssets = ({
 					sx={{ m: 2 }}>
 					<Stack spacing={2}>
 						{details?.results?.map((asset) => (
-							<Link key={asset?._id} to={`/app/assets/${asset?._id}`}>
+							<Link
+								onClick={() => setChoosen()}
+								key={asset?._id}
+								to={`/app/assets/${asset?._id}`}>
 								<Item>{asset?.name}</Item>
 							</Link>
 						))}

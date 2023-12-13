@@ -3,10 +3,10 @@
 import axios from "axios"
 
 const STOCKS_URL = `${process.env.REACT_APP_BASE_URL}/api/stocks`
+const TICKER_URL = `${process.env.REACT_APP_BASE_URL}/api/ticker`
 
 export const getAllStocks = async (query) => {
 	// structure of query should be {name: value}
-	console.log(query, "query here")
 
 	axios.defaults.headers.common[
 		"Authorization"
@@ -21,6 +21,8 @@ export const getParticularStock = async (stockId) => {
 	axios.defaults.headers.common[
 		"Authorization"
 	] = `Bearer ${sessionStorage.getItem("accessToken")}`
-	const response = await axios.get(`${STOCKS_URL}/${stockId}`)
+	const response = await axios.get(`${TICKER_URL}/${stockId}`, {
+		params: { type: "stock" },
+	})
 	return response.data
 }

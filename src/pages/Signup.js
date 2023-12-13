@@ -63,8 +63,6 @@ export default function SignUp() {
 		try {
 			const response = await signup(formData)
 
-			console.log(response)
-
 			// Store the access token, it will be needed when we make further request calls
 			sessionStorage.setItem("accessToken", response?.accessToken)
 			dispatch(setAuthenticatedUserRole(response?.role))
@@ -262,7 +260,7 @@ export default function SignUp() {
 												})
 											)
 										}>
-										{allRoles.map((role) => (
+										{allRoles && allRoles.map((role) => (
 											<MenuItem key={role?._id} value={role?._id}>
 												{role?.roleName}
 											</MenuItem>

@@ -1,7 +1,7 @@
 /** @format */
 
 import { Divider, Grid, Typography } from "@mui/material"
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router"
 
 import { SelectAssets } from "../components/assets/SelectAsset"
@@ -11,6 +11,8 @@ import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import Box from "@mui/material/Box"
 
+import { user_roles, assets_supported } from "../data/constants"
+
 // Redux
 import { useSelector, useDispatch } from "react-redux"
 import {
@@ -18,12 +20,21 @@ import {
 	setStocksResult,
 	setCryptoSearch,
 	setCryptoResult,
+	setChoosenAsset,
 } from "../store/assetReducer"
+import { setAllAssets, setAllClients } from "../store/userReducer"
 import { setNotification } from "../store/notificationReducer"
 
 // Services
-import { getAllCrypto, getParticularCrypto } from "../services/crypto"
-import { getAllStocks, getParticularStock } from "../services/stocks"
+import { getAllCrypto } from "../services/crypto"
+import { getAllStocks } from "../services/stocks"
+import {
+	getAllAssets,
+	sellAsset as sellAssetService,
+	getAdvisee,
+	getAdviseeAsset,
+	sellAssetForAdvisee,
+} from "../services/user"
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props
@@ -68,6 +79,11 @@ function Assets() {
 	const searchChangeCrypto = (value) => dispatch(setCryptoSearch(value))
 	const searchChangeStock = (value) => dispatch(setStocksSearch(value))
 
+	const setChoosenAssetAsStock = () =>
+		dispatch(setChoosenAsset(assets_supported.STOCK))
+	const setChoosenAssetAsCrypto = () =>
+		dispatch(setChoosenAsset(assets_supported.CRYPTO))
+
 	const searchCrypto = async () => {
 		try {
 			// Get the query param
@@ -94,6 +110,110 @@ function Assets() {
 		}
 	}
 
+	const userRole = useSelector((state) => state?.userReducer?.userRole)
+
+	// Role based division - CLIENT
+	const allAssets = useSelector((state) => state?.userReducer?.allAssets)
+
+	const sellAsset = async (assetId) => {
+		try {
+			const response = await sellAssetService(assetId)
+			getAllAssetsOfUser()
+			dispatch(
+				setNotification({
+					severity: "success",
+					message: "Asset sold successfully",
+				})
+			)
+		} catch (e) {
+			dispatch(
+				setNotification({
+					severity: "error",
+					message: "Could not sell the asset! Please try again later",
+				})
+			)
+		}
+	}
+
+	const sellAssetOfAdvisee = async (assetId) => {
+		try {
+			const response = await sellAssetForAdvisee(assetId)
+			loadAdviseeAssets(response?.user?._id)
+			console.log(response?.user?._id, "Sold asset for the user of the advisor")
+			dispatch(
+				setNotification({
+					severity: "success",
+					message: "Asset sold successfully",
+				})
+			)
+		} catch (e) {
+			dispatch(
+				setNotification({
+					severity: "error",
+					message: "Could not sell the asset! Please try again later",
+				})
+			)
+		}
+	}
+
+	const getAllAssetsOfUser = async () => {
+		try {
+			const response = await getAllAssets()
+			dispatch(setAllAssets(response))
+		} catch (e) {
+			console.log(e, "Could not load user assets")
+		}
+	}
+
+	// ADVISOR
+
+	const allClients = useSelector((state) => state.userReducer?.allClients)
+
+	const getAllAdvisee = async () => {
+		try {
+			const response = await getAdvisee()
+			dispatch(setAllClients(response?.adviseeList))
+			getAdviseeAssets()
+		} catch (e) {
+			console.log("Advisee could not be loaded", e?.response?.data?.message)
+		}
+	}
+
+	// Initially to get all the purchased assets of the user
+	useEffect(() => {
+		if (userRole === user_roles.CLIENT) {
+			getAllAssetsOfUser()
+		}
+		if (userRole === user_roles.ADVISOR) {
+			getAllAdvisee()
+		}
+	}, [userRole])
+
+	const loadAdviseeAssets = async (adviseeId) => {
+		try {
+			const response = await getAdviseeAsset(adviseeId)
+			dispatch(setAllAssets(response?.assetsList))
+			console.log(response?.assetsList)
+		} catch (e) {
+			console.log(
+				"Assets for the users could not be loaded",
+				e?.response?.data?.message
+			)
+		}
+	}
+
+	const getAdviseeAssets = () => {
+		if (value < allClients.length) {
+			const userSelected = allClients?.[value]
+			loadAdviseeAssets(userSelected?._id)
+		}
+	}
+
+	// On change of value, dynamically update the assets for the user
+	useEffect(() => {
+		getAdviseeAssets()
+	}, [value, allClients])
+
 	return (
 		<>
 			<Typography
@@ -113,6 +233,7 @@ function Assets() {
 						onSearchChange={searchChangeStock}
 						search={searchStock}
 						assetName='Stocks'
+						setChoosen={setChoosenAssetAsStock}
 					/>
 				</Grid>
 				<Grid item xs={12} sm={6}>
@@ -121,66 +242,76 @@ function Assets() {
 						onSearchChange={searchChangeCrypto}
 						search={searchCrypto}
 						assetName='Crypto'
+						setChoosen={setChoosenAssetAsCrypto}
 					/>
 				</Grid>
 			</Grid>
 			<Divider />
-			<Typography
-				component='h1'
-				variant='h4'
-				align='center'
-				color='text.primary'
-				gutterBottom>
-				Manage Assets
-			</Typography>
-			<br></br>
-			<br></br>
-			<AssetsTable />
-			<Divider />
-			<Typography
-				component='h1'
-				variant='h4'
-				align='center'
-				color='text.primary'
-				gutterBottom>
-				Manage Assets (For Advisors)
-			</Typography>
-			<br></br>
-			<br></br>
-			<Box
-				sx={{
-					flexGrow: 1,
-					bgcolor: "background.paper",
-					display: "flex",
-					width: "100%",
-				}}>
-				<Tabs
-					orientation='vertical'
-					variant='scrollable'
-					value={value}
-					onChange={handleChange}
-					sx={{ borderRight: 1, borderColor: "divider" }}>
-					<Tab sx={{ p: 3, textAlign: "center" }} label='User 1' />
-					<Tab sx={{ p: 3 }} label='User 2' />
-				</Tabs>
 
-				<TabPanel
-					style={{
-						width: "100%",
-					}}
-					value={value}
-					index={0}>
-					<AssetsTable />
-				</TabPanel>
-				<TabPanel
-					style={{
-						width: "100%",
-					}}
-					value={value}
-					index={1}>
-					<AssetsTable />
-				</TabPanel>
-			</Box>
+			{userRole === user_roles.CLIENT && (
+				<>
+					<Typography
+						component='h1'
+						variant='h4'
+						align='center'
+						color='text.primary'
+						gutterBottom>
+						Manage Assets
+					</Typography>
+					<br></br>
+					<br></br>
+					<AssetsTable data={allAssets} sell={sellAsset} />
+				</>
+			)}
+
+			{userRole === user_roles.ADVISOR && (
+				<>
+					<Typography
+						component='h1'
+						variant='h4'
+						align='center'
+						color='text.primary'
+						gutterBottom>
+						Manage Assets
+					</Typography>
+					<br></br>
+					<br></br>
+					<Box
+						sx={{
+							flexGrow: 1,
+							bgcolor: "background.paper",
+							display: "flex",
+							width: "100%",
+						}}>
+						<Tabs
+							orientation='vertical'
+							variant='scrollable'
+							value={value}
+							onChange={handleChange}
+							sx={{ borderRight: 1, borderColor: "divider" }}>
+							{allClients?.map((client) => (
+								<Tab
+									key={client?._id}
+									sx={{ p: 3, textAlign: "center" }}
+									label={`${client?.firstName} ${client?.lastName}`}
+								/>
+							))}
+						</Tabs>
+
+						{allClients?.map((client, i) => (
+							<TabPanel
+								key={client?._id}
+								style={{
+									width: "100%",
+								}}
+								value={value}
+								index={i}>
+								<AssetsTable data={allAssets} sell={sellAssetOfAdvisee} />
+							</TabPanel>
+						))}
+					</Box>
+				</>
+			)}
 		</>
 	)
 }

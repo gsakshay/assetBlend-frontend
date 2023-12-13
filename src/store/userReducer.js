@@ -24,22 +24,20 @@ const initialState = {
 	},
 	isAuthenticated: false,
 	rolesAvailable: [],
-	userRole: null,
+	userRole: "CLIENT",
 	// Registered user details
-	totalInvestedAmount: 0,
-	totalCurrentWorth: 0,
-	numberOfInvestments: 0,
-	recentTransactions: [],
+	clientDashboardData: {},
+
+	// All assets of a single user
+	allAssets: [],
 
 	// Advisor Details
-	totalAssetsOfClients: 0,
-	totalClients: 0,
-	topClients: [],
+	advisorDashboardData: {},
+	allClients: [],
 
 	// Admin Details
-	totalUsers: 0,
-	totalAssets: 0,
-	advisorReuests: [],
+	adminDashboard: {},
+	advisorRequests: [],
 	mainPageAssets: [],
 }
 
@@ -68,19 +66,33 @@ const userSlice = createSlice({
 				...action.payload,
 			}
 		},
-		setUserDashboard: (state, action) => {
-			const {
-				totalInvestedAmount,
-				totalCurrentWorth,
-				numberOfInvestments,
-				recentTransactions,
-			} = action.payload
-			state.totalInvestedAmount = totalInvestedAmount
-			state.totalCurrentWorth = totalCurrentWorth
-			state.numberOfInvestments = numberOfInvestments
-			state.recentTransactions = recentTransactions
+		setAllAssets: (state, action) => {
+			state.allAssets = action.payload
 		},
-		setAdvisorDashboard: (state, action) => {},
+		setUserDashboard: (state, action) => {
+			state.clientDashboardData = {
+				...state.clientDashboardData,
+				...action.payload,
+			}
+		},
+		setAdvisorDashboard: (state, action) => {
+			state.advisorDashboardData = {
+				...state.advisorDashboardData,
+				...action.payload,
+			}
+		},
+		setAdminDashboard: (state, action) => {
+			state.adminDashboard = {
+				...state.adminDashboard,
+				...action.payload,
+			}
+		},
+		setAdvisorRequests: (state, action) => {
+			state.advisorRequests = action.payload
+		},
+		setAllClients: (state, action) => {
+			state.allClients = action.payload
+		},
 	},
 })
 
@@ -91,5 +103,10 @@ export const {
 	setAuthenticated,
 	setVisitorProfile,
 	setAuthenticatedUserRole,
+	setAllAssets,
+	setAdminDashboard,
+	setAdvisorRequests,
+	setAllClients,
+	setAdvisorDashboard,
 } = userSlice.actions
 export default userSlice.reducer

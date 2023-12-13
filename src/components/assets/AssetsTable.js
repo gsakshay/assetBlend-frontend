@@ -10,58 +10,29 @@ import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
 import { TableVirtuoso } from "react-virtuoso"
 import { Button } from "@mui/material"
-
-const sample = [["Apple", 100, "01-01-2023", 100]]
-
-function createData(
-	id,
-	asset,
-	quantity,
-	purchased_on,
-	purchase_date_value,
-	sell
-) {
-	console.log(
-		"create data",
-		asset,
-		quantity,
-		purchased_on,
-		purchase_date_value,
-		sell
-	)
-	return { id, asset, quantity, purchased_on, purchase_date_value, sell }
-}
+import dayjs from "dayjs"
 
 const columns = [
 	{
-		width: 150,
 		label: "Asset",
-		dataKey: "asset",
+		dataKey: "ticker",
 	},
 	{
-		width: 90,
 		label: "Quantity",
 		dataKey: "quantity",
 		numeric: true,
 	},
 	{
-		width: 90,
 		label: "Purchased On",
-		dataKey: "purchased_on",
+		dataKey: "purchasedDate",
 		numeric: true,
 	},
 	{
-		width: 90,
 		label: "Amount Invested",
-		dataKey: "purchase_date_value",
+		dataKey: "amountOnPurchase",
 		numeric: true,
 	},
 ]
-
-const rows = Array.from({ length: 200 }, (_, index) => {
-	const randomSelection = sample[Math.floor(Math.random() * sample.length)]
-	return createData(index, ...randomSelection)
-})
 
 const VirtuosoTableComponents = {
 	Scroller: React.forwardRef((props, ref) => (
@@ -86,7 +57,6 @@ function fixedHeaderContent() {
 			{columns.map((column) => (
 				<TableCell
 					key={column.dataKey}
-					variant='head'
 					align={column.numeric || false ? "right" : "left"}
 					style={{ width: column.width }}
 					sx={{
@@ -96,7 +66,7 @@ function fixedHeaderContent() {
 				</TableCell>
 			))}
 			<TableCell
-				key={columns.length}
+				key={columns?.length}
 				variant='head'
 				align='center'
 				style={{ width: 90 }}
@@ -109,28 +79,35 @@ function fixedHeaderContent() {
 	)
 }
 
-function rowContent(_index, row) {
-	return (
-		<React.Fragment>
-			{columns.map((column) => (
-				<TableCell
-					key={column.dataKey}
-					align={column.numeric || false ? "right" : "left"}>
-					{row[column.dataKey]}
-				</TableCell>
-			))}
-			<TableCell key={columns.length} align='center'>
-				<Button color='secondary'>Sell</Button>
-			</TableCell>
-		</React.Fragment>
-	)
-}
+export default function AssetsTable({ data, sell }) {
+	const formattedData = data?.map((d) => ({
+		...d,
+		purchasedDate: dayjs(d?.purchasedDate).format("MM-DD-YYYY"),
+	}))
 
-export default function AssetsTable() {
+	function rowContent(_index, row) {
+		return (
+			<React.Fragment>
+				{columns.map((column) => (
+					<TableCell
+						key={column.dataKey}
+						align={column.numeric || false ? "right" : "left"}>
+						{row[column.dataKey]}
+					</TableCell>
+				))}
+				<TableCell key={columns.length} align='center'>
+					<Button onClick={() => sell(row?._id)} color='secondary'>
+						Sell
+					</Button>
+				</TableCell>
+			</React.Fragment>
+		)
+	}
+
 	return (
 		<Paper style={{ height: 400, width: "100%" }}>
 			<TableVirtuoso
-				data={rows}
+				data={formattedData}
 				components={VirtuosoTableComponents}
 				fixedHeaderContent={fixedHeaderContent}
 				itemContent={rowContent}
