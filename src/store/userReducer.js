@@ -1,9 +1,8 @@
 /** @format */
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-
 	profile: {
 		_id: "",
 		role: "",
@@ -25,7 +24,7 @@ const initialState = {
 	},
 	isAuthenticated: false,
 	rolesAvailable: [],
-	userRole: "ADMIN",
+	userRole: "",
 	// Registered user details
 	totalInvestedAmount: 0,
 	totalCurrentWorth: 0,
@@ -39,7 +38,7 @@ const initialState = {
 	totalAssetsOfClients: 0,
 	totalClients: 0,
 	allClients: [],
-  
+
 	// Admin Details
 	adminDashboard: {},
 	advisorRequests: [],
