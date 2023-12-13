@@ -173,6 +173,7 @@ function Assets() {
 		try {
 			const response = await getAdvisee()
 			dispatch(setAllClients(response?.adviseeList))
+			getAdviseeAssets()
 		} catch (e) {
 			console.log("Advisee could not be loaded", e?.response?.data?.message)
 		}
@@ -211,7 +212,7 @@ function Assets() {
 	// On change of value, dynamically update the assets for the user
 	useEffect(() => {
 		getAdviseeAssets()
-	}, [value])
+	}, [value, allClients])
 
 	return (
 		<>

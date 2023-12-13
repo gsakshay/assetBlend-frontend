@@ -86,3 +86,14 @@ export const sellAssetForAdvisee = async (assetId) => {
 	const response = await axios.post(`${ADVISOR_URL}/sell/assets/${assetId}`)
 	return response.data
 }
+
+export const addAssetForAdvisee = async (adviseeId, assetData) => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+	const response = await axios.post(
+		`${ADVISOR_URL}/buy/${adviseeId}/assets`,
+		assetData
+	)
+	return response.data
+}

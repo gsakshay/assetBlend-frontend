@@ -31,7 +31,7 @@ import {
 // Services
 import { getParticularCrypto } from "../services/crypto"
 import { getParticularStock } from "../services/stocks"
-import { addAsset } from "../services/user"
+import { addAsset, addAssetForAdvisee } from "../services/user"
 import { useParams } from "react-router"
 import { ContactSupportOutlined } from "@mui/icons-material"
 import { addNewsAsset } from "../services/admin"
@@ -52,6 +52,8 @@ function AssetDetail() {
 	const [openAddAssetModel, setOpenAddAssetModel] = useState(false)
 	const handleOpenAddAssetModel = () => setOpenAddAssetModel(true)
 	const handleCloseAddAssetModel = () => setOpenAddAssetModel(false)
+
+	const allClients = useSelector((state) => state.userReducer?.allClients)
 
 	const [selectedUser, setSelectedUser] = useState("")
 
@@ -127,24 +129,55 @@ function AssetDetail() {
 			datePurchased: dayjs(addAssetDetails?.date).format("YYYY-MM-DD"),
 			type: assetSelected === assets_supported.STOCK ? "stock" : "crypto",
 		}
-		try {
-			const response = await addAsset(formData)
-			// TODO: update the store with response to reduce the api calls - Future update
-			// console.log(response)
-			dispatch(
-				setNotification({
-					severity: "success",
-					message: "Added asset successfully!",
-				})
-			)
-			handleCloseAddAssetModel()
-		} catch (e) {
-			dispatch(
-				setNotification({
-					severity: "error",
-					message: "Could not add asset! Please try again",
-				})
-			)
+
+		if (userRole === user_roles.CLIENT) {
+			try {
+				const response = await addAsset(formData)
+				// TODO: update the store with response to reduce the api calls - Future update
+				// console.log(response)
+				dispatch(
+					setNotification({
+						severity: "success",
+						message: "Added asset successfully!",
+					})
+				)
+				handleCloseAddAssetModel()
+			} catch (e) {
+				dispatch(
+					setNotification({
+						severity: "error",
+						message: "Could not add asset! Please try again",
+					})
+				)
+			}
+		} else {
+			try {
+				if (!addAssetDetails?.user?._id) {
+					console.log("User not selected")
+					return
+				}
+
+				const response = await addAssetForAdvisee(
+					addAssetDetails?.user?._id,
+					formData
+				)
+				// TODO: update the store with response to reduce the api calls - Future update
+				// console.log(response)
+				dispatch(
+					setNotification({
+						severity: "success",
+						message: "Added asset successfully!",
+					})
+				)
+				handleCloseAddAssetModel()
+			} catch (e) {
+				dispatch(
+					setNotification({
+						severity: "error",
+						message: "Could not add asset! Please try again",
+					})
+				)
+			}
 		}
 	}
 
@@ -235,10 +268,20 @@ function AssetDetail() {
 								id='user-select'
 								value={addAssetDetails?.user?._id}
 								label='User'
-								onChange={(e) => setSelectedUser(e.target.value)}>
-								{users.map((user) => (
-									<MenuItem key={user.id} value={user.name}>
-										{user.name}
+								onChange={(e) =>
+									dispatch(
+										setAddAsset({
+											...addAssetDetails,
+											user: {
+												...addAssetDetails.user,
+												_id: e.target.value,
+											},
+										})
+									)
+								}>
+								{allClients?.map((user) => (
+									<MenuItem key={user?._id} value={user?._id}>
+										{`${user?.firstName} ${user?.lastName}`}
 									</MenuItem>
 								))}
 							</Select>
