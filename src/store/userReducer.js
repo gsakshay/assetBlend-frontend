@@ -24,7 +24,7 @@ const initialState = {
 	},
 	isAuthenticated: false,
 	rolesAvailable: [],
-	userRole: "",
+	userRole: "ADVISOR",
 	// Registered user details
 	totalInvestedAmount: 0,
 	totalCurrentWorth: 0,
@@ -35,8 +35,7 @@ const initialState = {
 	allAssets: [],
 
 	// Advisor Details
-	totalAssetsOfClients: 0,
-	totalClients: 0,
+	advisorDashboardData: {},
 	allClients: [],
 
 	// Admin Details
@@ -85,7 +84,12 @@ const userSlice = createSlice({
 			state.numberOfInvestments = numberOfInvestments
 			state.recentTransactions = recentTransactions
 		},
-		setAdvisorDashboard: (state, action) => {},
+		setAdvisorDashboard: (state, action) => {
+			state.advisorDashboardData = {
+				...state.advisorDashboardData,
+				...action.payload,
+			}
+		},
 		setAdminDashboard: (state, action) => {
 			state.adminDashboard = {
 				...state.adminDashboard,
@@ -112,5 +116,6 @@ export const {
 	setAdminDashboard,
 	setAdvisorRequests,
 	setAllClients,
+	setAdvisorDashboard,
 } = userSlice.actions
 export default userSlice.reducer

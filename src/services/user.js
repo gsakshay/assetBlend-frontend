@@ -60,6 +60,8 @@ export const sellAsset = async (assetId) => {
 	return response.data
 }
 
+export const getClientDashboard = async () => {}
+
 // For an advisor
 // Get all advisee
 
@@ -95,5 +97,13 @@ export const addAssetForAdvisee = async (adviseeId, assetData) => {
 		`${ADVISOR_URL}/buy/${adviseeId}/assets`,
 		assetData
 	)
+	return response.data
+}
+
+export const getAdvisorDashboard = async () => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+	const response = await axios.get(`${ADVISOR_URL}/dashboard`)
 	return response.data
 }

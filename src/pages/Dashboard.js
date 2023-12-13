@@ -8,13 +8,18 @@ import AdminDashboard from "../components/dashbords/Admin"
 
 // Redux
 import { useSelector, useDispatch } from "react-redux"
-import { setAdminDashboard, setAdvisorRequests } from "../store/userReducer"
+import {
+	setAdminDashboard,
+	setAdvisorRequests,
+	setAdvisorDashboard,
+	setAllClients,
+} from "../store/userReducer"
 import { setNewsAssets } from "../store/assetReducer"
 import { setNotification } from "../store/notificationReducer"
 import { user_roles } from "../data/constants"
 
 // Services
-import {} from "../services/user"
+import { getAdvisorDashboard, getAdvisee } from "../services/user"
 import {
 	getAdvisorRequests,
 	getDashboardData as getAdminDashboard,
@@ -23,6 +28,7 @@ import {
 } from "../services/admin"
 import { getNewsAssets } from "../services/assets"
 import { useNavigate } from "react-router"
+import { ContactSupportOutlined } from "@mui/icons-material"
 
 function Dashboard() {
 	const dispatch = useDispatch()
@@ -107,6 +113,37 @@ function Dashboard() {
 		}
 	}
 
+	// FOR ADVISOR
+
+	const advisorDashboardData = useSelector(
+		(state) => state?.userReducer?.advisorDashboardData
+	)
+
+	const allClients = useSelector((state) => state.userReducer?.allClients)
+
+	const getAdvisorDashboardData = async () => {
+		console.log("Advisor dashboard being called")
+		try {
+			const response = await getAdvisorDashboard()
+			dispatch(setAdvisorDashboard(response?.advisorDashboardData))
+			console.log(response, "advisor dashboard")
+		} catch (e) {
+			console.log(
+				"Could not load advisor dashboard",
+				e?.response?.data?.messsage
+			)
+		}
+	}
+
+	const getAllAdvisee = async () => {
+		try {
+			const response = await getAdvisee()
+			dispatch(setAllClients(response?.adviseeList))
+		} catch (e) {
+			console.log("Advisee could not be loaded", e?.response?.data?.message)
+		}
+	}
+
 	useEffect(() => {
 		if (userRole === user_roles.ADMIN) {
 			// GET ADMIN DASHBOARD DATA
@@ -114,12 +151,19 @@ function Dashboard() {
 			getAdvisorsForApproval()
 			getAllNewsAssets()
 		}
+
+		if (userRole === user_roles.ADVISOR) {
+			getAdvisorDashboardData()
+			getAllAdvisee()
+		}
 	}, [userRole])
 
 	return (
 		<div>
 			{userRole === user_roles.CLIENT && <RegisteredUser />}
-			{userRole === user_roles.ADVISOR && <AdvisorDashboard />}
+			{userRole === user_roles.ADVISOR && (
+				<AdvisorDashboard data={advisorDashboardData} clients={allClients} />
+			)}
 			{userRole === user_roles.ADMIN && (
 				<AdminDashboard
 					data={adminDashboardData}
