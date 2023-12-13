@@ -4,6 +4,7 @@ import axios from "axios"
 
 const ACCOUNT_URL = `${process.env.REACT_APP_BASE_URL}/api/account`
 const USER_URL = `${process.env.REACT_APP_BASE_URL}/api/user`
+const ADVISOR_URL = `${process.env.REACT_APP_BASE_URL}/api/advisors`
 
 export const getProfileDetails = async () => {
 	axios.defaults.headers.common[
@@ -56,5 +57,32 @@ export const sellAsset = async (assetId) => {
 		"Authorization"
 	] = `Bearer ${sessionStorage.getItem("accessToken")}`
 	const response = await axios.post(`${USER_URL}/assets/${assetId}`)
+	return response.data
+}
+
+// For an advisor
+// Get all advisee
+
+export const getAdvisee = async () => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+	const response = await axios.get(`${ADVISOR_URL}/advisee`)
+	return response.data
+}
+
+export const getAdviseeAsset = async (adviseeId) => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+	const response = await axios.get(`${ADVISOR_URL}/assets/${adviseeId}`)
+	return response.data
+}
+
+export const sellAssetForAdvisee = async (assetId) => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+	const response = await axios.post(`${ADVISOR_URL}/sell/assets/${assetId}`)
 	return response.data
 }

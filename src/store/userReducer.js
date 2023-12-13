@@ -95,6 +95,9 @@ const userSlice = createSlice({
 		setAdvisorRequests: (state, action) => {
 			state.advisorRequests = action.payload
 		},
+		setAllClients: (state, action) => {
+			state.allClients = action.payload
+		},
 	},
 })
 
@@ -108,5 +111,6 @@ export const {
 	setAllAssets,
 	setAdminDashboard,
 	setAdvisorRequests,
+	setAllClients,
 } = userSlice.actions
 export default userSlice.reducer

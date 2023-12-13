@@ -22,13 +22,19 @@ import {
 	setCryptoResult,
 	setChoosenAsset,
 } from "../store/assetReducer"
-import { setAllAssets } from "../store/userReducer"
+import { setAllAssets, setAllClients } from "../store/userReducer"
 import { setNotification } from "../store/notificationReducer"
 
 // Services
 import { getAllCrypto } from "../services/crypto"
 import { getAllStocks } from "../services/stocks"
-import { getAllAssets, sellAsset as sellAssetService } from "../services/user"
+import {
+	getAllAssets,
+	sellAsset as sellAssetService,
+	getAdvisee,
+	getAdviseeAsset,
+	sellAssetForAdvisee,
+} from "../services/user"
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props
@@ -71,7 +77,6 @@ function Assets() {
 	const stockDetails = useSelector((state) => state?.assetReducer?.stocks)
 
 	const searchChangeCrypto = (value) => dispatch(setCryptoSearch(value))
-	console.log("Temp:"+value)
 	const searchChangeStock = (value) => dispatch(setStocksSearch(value))
 
 	const setChoosenAssetAsStock = () =>
@@ -111,10 +116,30 @@ function Assets() {
 	const allAssets = useSelector((state) => state?.userReducer?.allAssets)
 
 	const sellAsset = async (assetId) => {
-		// console.log("Sell this asset", assetId)
 		try {
 			const response = await sellAssetService(assetId)
 			getAllAssetsOfUser()
+			dispatch(
+				setNotification({
+					severity: "success",
+					message: "Asset sold successfully",
+				})
+			)
+		} catch (e) {
+			dispatch(
+				setNotification({
+					severity: "error",
+					message: "Could not sell the asset! Please try again later",
+				})
+			)
+		}
+	}
+
+	const sellAssetOfAdvisee = async (assetId) => {
+		try {
+			const response = await sellAssetForAdvisee(assetId)
+			loadAdviseeAssets(response?.user?._id)
+			console.log(response?.user?._id, "Sold asset for the user of the advisor")
 			dispatch(
 				setNotification({
 					severity: "success",
@@ -140,12 +165,53 @@ function Assets() {
 		}
 	}
 
+	// ADVISOR
+
+	const allClients = useSelector((state) => state.userReducer?.allClients)
+
+	const getAllAdvisee = async () => {
+		try {
+			const response = await getAdvisee()
+			dispatch(setAllClients(response?.adviseeList))
+		} catch (e) {
+			console.log("Advisee could not be loaded", e?.response?.data?.message)
+		}
+	}
+
 	// Initially to get all the purchased assets of the user
 	useEffect(() => {
 		if (userRole === user_roles.CLIENT) {
 			getAllAssetsOfUser()
 		}
+		if (userRole === user_roles.ADVISOR) {
+			getAllAdvisee()
+		}
 	}, [userRole])
+
+	const loadAdviseeAssets = async (adviseeId) => {
+		try {
+			const response = await getAdviseeAsset(adviseeId)
+			dispatch(setAllAssets(response?.assetsList))
+			console.log(response?.assetsList)
+		} catch (e) {
+			console.log(
+				"Assets for the users could not be loaded",
+				e?.response?.data?.message
+			)
+		}
+	}
+
+	const getAdviseeAssets = () => {
+		if (value < allClients.length) {
+			const userSelected = allClients?.[value]
+			loadAdviseeAssets(userSelected?._id)
+		}
+	}
+
+	// On change of value, dynamically update the assets for the user
+	useEffect(() => {
+		getAdviseeAssets()
+	}, [value])
 
 	return (
 		<>
@@ -205,7 +271,7 @@ function Assets() {
 						align='center'
 						color='text.primary'
 						gutterBottom>
-						Manage Assets (For Advisors)
+						Manage Assets
 					</Typography>
 					<br></br>
 					<br></br>
@@ -222,26 +288,26 @@ function Assets() {
 							value={value}
 							onChange={handleChange}
 							sx={{ borderRight: 1, borderColor: "divider" }}>
-							<Tab sx={{ p: 3, textAlign: "center" }} label='User 1' />
-							<Tab sx={{ p: 3 }} label='User 2' />
+							{allClients?.map((client) => (
+								<Tab
+									key={client?._id}
+									sx={{ p: 3, textAlign: "center" }}
+									label={`${client?.firstName} ${client?.lastName}`}
+								/>
+							))}
 						</Tabs>
 
-						<TabPanel
-							style={{
-								width: "100%",
-							}}
-							value={value}
-							index={0}>
-							<AssetsTable />
-						</TabPanel>
-						<TabPanel
-							style={{
-								width: "100%",
-							}}
-							value={value}
-							index={1}>
-							<AssetsTable />
-						</TabPanel>
+						{allClients?.map((client, i) => (
+							<TabPanel
+								key={client?._id}
+								style={{
+									width: "100%",
+								}}
+								value={value}
+								index={i}>
+								<AssetsTable data={allAssets} sell={sellAssetOfAdvisee} />
+							</TabPanel>
+						))}
 					</Box>
 				</>
 			)}
