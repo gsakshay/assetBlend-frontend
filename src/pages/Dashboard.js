@@ -13,13 +13,18 @@ import {
 	setAdvisorRequests,
 	setAdvisorDashboard,
 	setAllClients,
+	setUserDashboard,
 } from "../store/userReducer"
 import { setNewsAssets } from "../store/assetReducer"
 import { setNotification } from "../store/notificationReducer"
 import { user_roles } from "../data/constants"
 
 // Services
-import { getAdvisorDashboard, getAdvisee } from "../services/user"
+import {
+	getAdvisorDashboard,
+	getAdvisee,
+	getClientDashboard,
+} from "../services/user"
 import {
 	getAdvisorRequests,
 	getDashboardData as getAdminDashboard,
@@ -144,6 +149,43 @@ function Dashboard() {
 		}
 	}
 
+	// FOR CLIENT
+
+	const clientDashboardData = useSelector(
+		(state) => state?.userReducer?.clientDashboardData
+	)
+
+	const getClientDashboardData = async () => {
+		try {
+			const response = await getClientDashboard()
+
+			// USE the response to get dashboard data
+
+			const cryptos = response?.crypto
+			const stocks = response?.stocks
+
+			const totalInvestedAmount = response?.user?.totalInvestedAmount
+			const totalAssets = response?.no_of_assets
+			const currentWorth =
+				parseInt(totalInvestedAmount) + parseInt(response?.overAll_profitLoss)
+			const transactions = stocks?.concat(cryptos)
+
+			const dashboardData = {
+				totalInvestedAmount,
+				totalAssets,
+				currentWorth,
+				transactions,
+			}
+
+			dispatch(setUserDashboard(dashboardData))
+		} catch (e) {
+			console.log(
+				"Could not load client dashboard",
+				e?.response?.data?.messsage
+			)
+		}
+	}
+
 	useEffect(() => {
 		if (userRole === user_roles.ADMIN) {
 			// GET ADMIN DASHBOARD DATA
@@ -156,11 +198,17 @@ function Dashboard() {
 			getAdvisorDashboardData()
 			getAllAdvisee()
 		}
+
+		if (userRole === user_roles.CLIENT) {
+			getClientDashboardData()
+		}
 	}, [userRole])
 
 	return (
 		<div>
-			{userRole === user_roles.CLIENT && <RegisteredUser />}
+			{userRole === user_roles.CLIENT && (
+				<RegisteredUser data={clientDashboardData} />
+			)}
 			{userRole === user_roles.ADVISOR && (
 				<AdvisorDashboard data={advisorDashboardData} clients={allClients} />
 			)}

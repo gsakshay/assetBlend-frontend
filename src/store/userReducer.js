@@ -24,12 +24,9 @@ const initialState = {
 	},
 	isAuthenticated: false,
 	rolesAvailable: [],
-	userRole: "ADVISOR",
+	userRole: "CLIENT",
 	// Registered user details
-	totalInvestedAmount: 0,
-	totalCurrentWorth: 0,
-	numberOfInvestments: 0,
-	recentTransactions: [],
+	clientDashboardData: {},
 
 	// All assets of a single user
 	allAssets: [],
@@ -73,16 +70,10 @@ const userSlice = createSlice({
 			state.allAssets = action.payload
 		},
 		setUserDashboard: (state, action) => {
-			const {
-				totalInvestedAmount,
-				totalCurrentWorth,
-				numberOfInvestments,
-				recentTransactions,
-			} = action.payload
-			state.totalInvestedAmount = totalInvestedAmount
-			state.totalCurrentWorth = totalCurrentWorth
-			state.numberOfInvestments = numberOfInvestments
-			state.recentTransactions = recentTransactions
+			state.clientDashboardData = {
+				...state.clientDashboardData,
+				...action.payload,
+			}
 		},
 		setAdvisorDashboard: (state, action) => {
 			state.advisorDashboardData = {

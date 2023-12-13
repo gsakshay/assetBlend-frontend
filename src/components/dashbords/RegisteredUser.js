@@ -2,7 +2,7 @@
 
 /** @format */
 import * as React from "react"
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react"
 
 import Container from "@mui/material/Container"
 import Grid from "@mui/material/Grid"
@@ -19,7 +19,8 @@ import {
 	Typography,
 } from "@mui/material"
 import { Link } from "react-router-dom"
-import InvestmentBarChart from "../../components/chart/InvestmentBarChart";
+import InvestmentBarChart from "../../components/chart/InvestmentBarChart"
+import dayjs from "dayjs"
 
 function createData(id, date, asset, amount, action) {
 	return { id, date, asset, amount, action }
@@ -35,23 +36,7 @@ const rows = [
 	createData(0, "16 Mar, 2019", "Apple", 100, "Buy"),
 ]
 
-
-function Dashboard() {
-	
-// useEffect(() => {
-//     // Fetch investment data from your API
-//     // For example purposes, setting some dummy data
-//     const fetchData = async () => {
-//       // Assuming your API returns an object like { totalInvested: 100, currentWorth: 150 }
-//       const response = await fetch('YOUR_API_ENDPOINT');
-//       const data = await response.json();
-//       setInvestmentData(data);
-//     };
-
-//     fetchData();
-//   }, []);
-
-const [investmentData, setInvestmentData] = useState({ totalInvested: 20, currentWorth: 12 });
+function Dashboard({ data }) {
 	return (
 		<div>
 			<Grid container spacing={3}>
@@ -78,11 +63,11 @@ const [investmentData, setInvestmentData] = useState({ totalInvested: 20, curren
 						}}>
 						<Title>Total Investment Amount</Title>
 						<Typography component='p' variant='h4'>
-							$3,024.00
+							{data?.totalInvestedAmount}
 						</Typography>
-						<Typography color='text.secondary' sx={{ flex: 1 }}>
-							as of 15 March, 2019
-						</Typography>
+						{/* <Typography color='text.secondary' sx={{ flex: 1 }}>
+							{data?.totalAssets}
+						</Typography> */}
 					</Paper>
 				</Grid>
 				<Grid item xs={12} md={6}>
@@ -95,11 +80,11 @@ const [investmentData, setInvestmentData] = useState({ totalInvested: 20, curren
 						}}>
 						<Title>Number of Investments</Title>
 						<Typography component='p' variant='h4'>
-							25
+							{data?.totalAssets}
 						</Typography>
-						<Typography color='text.secondary' sx={{ flex: 1 }}>
+						{/* <Typography color='text.secondary' sx={{ flex: 1 }}>
 							as of 15 March, 2019
-						</Typography>
+						</Typography> */}
 					</Paper>
 				</Grid>
 				{/* Recent Orders */}
@@ -110,18 +95,24 @@ const [investmentData, setInvestmentData] = useState({ totalInvested: 20, curren
 							<TableHead>
 								<TableRow>
 									<TableCell>Date</TableCell>
-									<TableCell>Asset</TableCell>
+									<TableCell>Asset Type</TableCell>
 									<TableCell>Amount</TableCell>
 									<TableCell>Action</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
-								{rows.map((row) => (
-									<TableRow key={row.id}>
-										<TableCell>{row.date}</TableCell>
-										<TableCell>{row.asset}</TableCell>
-										<TableCell>{row.amount}</TableCell>
-										<TableCell>{row.action}</TableCell>
+								{data?.transactions?.map((row, i) => (
+									<TableRow key={i}>
+										<TableCell>
+											{dayjs(row?.assetData?.purchasedDate).format(
+												"YYYY-MM-DD"
+											)}
+										</TableCell>
+										<TableCell>{row?.assetData?.type}</TableCell>
+										<TableCell>{row?.assetData?.amountOnPurchase}</TableCell>
+										<TableCell>
+											{row.assetData?.sold ? `Sell` : `Buy`}
+										</TableCell>
 									</TableRow>
 								))}
 							</TableBody>
@@ -132,7 +123,10 @@ const [investmentData, setInvestmentData] = useState({ totalInvested: 20, curren
 					<Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
 						<Title>Summary</Title>
 						{/* <IndividualChart /> */}
-						<InvestmentBarChart {...investmentData} />
+						<InvestmentBarChart
+							totalInvested={data?.totalInvestedAmount}
+							currentWorth={data?.currentWorth}
+						/>
 					</Paper>
 				</Grid>
 			</Grid>
