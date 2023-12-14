@@ -5,11 +5,15 @@ import {
   IgrFinancialChartModule,
 } from 'igniteui-react-charts';
 import TempStocksHistory from './TempStocksHistory';
+import { useSelector } from 'react-redux';
 
 IgrFinancialChartModule.register();
 
 const AssetsChart = ({ jsonData }) => {
   const stocks = TempStocksHistory(jsonData);
+  const temp = useSelector((state) => state?.assetReducer?.stockDetail)
+
+  console.log("Yup"+temp);
 
   return (
     <div className='container-fluid'>

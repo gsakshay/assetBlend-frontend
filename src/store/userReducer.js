@@ -39,6 +39,9 @@ const initialState = {
 	adminDashboard: {},
 	advisorRequests: [],
 	mainPageAssets: [],
+
+	// List of all Advisors
+	allAdvisors: []
 }
 
 const userSlice = createSlice({
@@ -93,6 +96,9 @@ const userSlice = createSlice({
 		setAllClients: (state, action) => {
 			state.allClients = action.payload
 		},
+		setAllAdvisor: (state, action) => {
+			state.allAdvisors = action.payload
+		},
 	},
 })
 
@@ -108,5 +114,6 @@ export const {
 	setAdvisorRequests,
 	setAllClients,
 	setAdvisorDashboard,
+	setAllAdvisor
 } = userSlice.actions
 export default userSlice.reducer

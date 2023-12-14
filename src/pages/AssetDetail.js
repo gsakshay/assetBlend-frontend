@@ -47,6 +47,7 @@ function AssetDetail() {
 		(state) => state?.assetReducer?.cryptoDetail
 	)
 	const stockDetails = useSelector((state) => state?.assetReducer?.stockDetail)
+	console.log("TesingStockDetails:"+ stockDetails)
 	const addAssetDetails = useSelector((state) => state?.assetReducer?.addAsset)
 
 	const [openAddAssetModel, setOpenAddAssetModel] = useState(false)
