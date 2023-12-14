@@ -47,7 +47,11 @@ function AssetDetail() {
 		(state) => state?.assetReducer?.cryptoDetail
 	)
 	const stockDetails = useSelector((state) => state?.assetReducer?.stockDetail)
-	console.log("TesingStockDetails:"+ stockDetails)
+	console.log(
+		"TesingStockDetails:",
+		cryptoDetails?.priceData,
+		stockDetails?.priceData
+	)
 	const addAssetDetails = useSelector((state) => state?.assetReducer?.addAsset)
 
 	const [openAddAssetModel, setOpenAddAssetModel] = useState(false)
@@ -99,21 +103,7 @@ function AssetDetail() {
 		}
 	}
 
-	const [stockData, setStockData] = useState([])
-
 	useEffect(() => {
-		const fetchStockData = async () => {
-			try {
-				// Use require to import the local JSON file
-				const jsonData = require("../components/chart/stockdata.json")
-				setStockData(jsonData)
-			} catch (error) {
-				console.error("Error fetching stock data:", error)
-			}
-		}
-
-		fetchStockData()
-
 		if (assetSelected === assets_supported.STOCK) {
 			getStockDetails()
 		}
@@ -336,7 +326,6 @@ function AssetDetail() {
 										{assetSelected === assets_supported.STOCK
 											? stockDetails?.asset?.reportingCurrency?.toUpperCase()
 											: cryptoDetails?.asset?.quoteCurrency?.toUpperCase()}
-										{}
 									</Typography>
 								</Grid>
 								<Grid item xs={2}>
@@ -382,7 +371,13 @@ function AssetDetail() {
 								flexDirection: "column",
 								// height: 240,
 							}}>
-							<AssetsChart jsonData={stockData} />
+							<AssetsChart
+								jsonData={
+									assetSelected === assets_supported.STOCK
+										? stockDetails?.priceData
+										: cryptoDetails?.priceData
+								}
+							/>
 						</Paper>
 					</Grid>
 				</Grid>
