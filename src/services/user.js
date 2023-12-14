@@ -68,6 +68,29 @@ export const getClientDashboard = async () => {
 	return response.data
 }
 
+// Get list of all advisor
+
+export const getAllAdvisor = async () => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+	const response = await axios.get(`${ADVISOR_URL}`)
+	return response.data
+}
+
+// Assign or change Advisor to the user
+
+export const assignAdvisor = async (advisorId) => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+	const response = await axios.post(`${USER_URL}/addAdvisor/${advisorId}`)
+	return response.data
+}
+
+
+
+
 // For an advisor
 // Get all advisee
 

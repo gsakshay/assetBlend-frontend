@@ -14,8 +14,8 @@ import { ROAccountDetails } from "../components/account/ROAccountDetails"
 
 function AccountPage() {
 	const dispatch = useDispatch()
-	const profileDetails = useSelector((state) => state.userReducer?.visitProfile)
-
+	const profileDetails = useSelector((state) => state.userReducer?.userAdvisor.advisor)
+console.log("Deep:",profileDetails)
 	const { accountId } = useParams()
 
 	const getProfileData = async () => {
