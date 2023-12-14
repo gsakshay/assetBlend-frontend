@@ -4,38 +4,50 @@ import Title from "../components/Title"
 import  AddAdvisor from "../components/advisor/AddAdvisor"
 import  ShowAdvisorDetail from "../components/advisor/ShowAdvisorDetail"
 import { useDispatch, useSelector } from "react-redux"
-import { setAdminDashboard, setAllAdvisor } from "../store/userReducer"
-import { getAllAdvisor } from "../services/user"
+import { setAdminDashboard, setAllAdvisor, setUserAdvisor, setUserProfile } from "../store/userReducer"
+import { getAllAdvisor, getProfileDetails } from "../services/user"
+import  ViewOnlyAccount from "./ViewOnlyAccount"
+
 
 function Advisor() {
 	const dispatch = useDispatch()
 
-	const getAllAdvisorData= async () => {
-		// try {
-		// 	const response = await getAllAdvisor()
-		// 	console.log("LOL"+response.userDetails)
-		// 	dispatch(setAllAdvisor(response?.userDetails))
-		// } catch (e) {
-		// 	console.log("Could not fetch admin dashboard"+e)
-		// }
+
+	const getUserData = async () => {
+		try {
+			const details = await getProfileDetails()
+			dispatch(setUserAdvisor(details?.userDetails))
+		} catch (e) {
+			console.log("Could not load profile details", e)
+		}
 	}
+
+	const userAdvisorDetail = useSelector((state) => state?.userReducer?.userAdvisor.advisor)
+	// console.log("SSS:",userAdvisorDetail)
 
 	const userRole = useSelector((state) => state?.userReducer?.userRole)
 	
 	useEffect(() => {
-		getAllAdvisorData()
+		getUserData()
 	}, [userRole])
 	
 	return (
 		<Grid container spacing={3}>
-			<Grid item xs={12} sm={12}>
-                <h1>This will show  if user does not have Advisor</h1>
-				<AddAdvisor/>
-			</Grid>
-            <Grid item xs={12} sm={12}>
-            <h1>This will show  if user does have Advisor</h1>
-				<ShowAdvisorDetail/>
-			</Grid>
+			{
+				userAdvisorDetail === null && (
+					<Grid item xs={12} sm={12}>
+                		<AddAdvisor/>
+					</Grid>
+				)
+			}
+
+			{
+				userAdvisorDetail != null && (
+					<Grid item xs={12} sm={12}>
+						<ViewOnlyAccount />
+					</Grid>
+				)
+			}
 		</Grid>
 	)
 }
