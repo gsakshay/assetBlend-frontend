@@ -11,6 +11,7 @@ export const getProfileDetails = async () => {
 		"Authorization"
 	] = `Bearer ${sessionStorage.getItem("accessToken")}`
 	const response = await axios.get(`${ACCOUNT_URL}`)
+	console.log("User Detail Tesing:"+response.data)
 	return response.data
 }
 
@@ -65,6 +66,17 @@ export const getClientDashboard = async () => {
 		"Authorization"
 	] = `Bearer ${sessionStorage.getItem("accessToken")}`
 	const response = await axios.get(`${USER_URL}/dashboard`)
+	return response.data
+}
+
+// Get list of all advisor
+
+export const getAllAdvisor = async () => {
+	axios.defaults.headers.common[
+		"Authorization"
+	] = `Bearer ${sessionStorage.getItem("accessToken")}`
+	const response = await axios.get(`${ADVISOR_URL}`)
+	console.log("Testing Data:"+response.data)
 	return response.data
 }
 
