@@ -81,6 +81,11 @@ export default function Home() {
 		}
 	}
 
+	const isWeekend = (date) => {
+		const day = date.day()
+		return day === 0 || day === 6
+	}
+
 	return (
 		<>
 			<CssBaseline />
@@ -231,7 +236,8 @@ export default function Home() {
 								fullWidth
 								label='Date of Purchase'
 								value={purchasedDate}
-								onChange={(newValue) => setPurchasedDate(newValue)}
+								shouldDisableDate={isWeekend}
+								onChange={(newDate, e) => setPurchasedDate(newDate)}
 							/>
 							<br></br>
 							<br></br>

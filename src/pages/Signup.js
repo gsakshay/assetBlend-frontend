@@ -58,6 +58,7 @@ export default function SignUp() {
 			password: profileDetails?.password,
 			phone: profileDetails?.phone,
 			role: profileDetails?.role,
+			address: profileDetails?.address,
 		}
 
 		try {
@@ -260,11 +261,12 @@ export default function SignUp() {
 												})
 											)
 										}>
-										{allRoles && allRoles.map((role) => (
-											<MenuItem key={role?._id} value={role?._id}>
-												{role?.roleName}
-											</MenuItem>
-										))}
+										{allRoles &&
+											allRoles.map((role) => (
+												<MenuItem key={role?._id} value={role?._id}>
+													{role?.roleName}
+												</MenuItem>
+											))}
 									</Select>
 								</FormControl>
 							</Grid>
