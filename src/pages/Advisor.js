@@ -2,10 +2,9 @@ import { Grid } from "@mui/material"
 import React, { useEffect } from "react"
 import Title from "../components/Title"
 import  AddAdvisor from "../components/advisor/AddAdvisor"
-import  ShowAdvisorDetail from "../components/advisor/ShowAdvisorDetail"
 import { useDispatch, useSelector } from "react-redux"
-import { setAdminDashboard, setAllAdvisor, setUserAdvisor, setUserProfile } from "../store/userReducer"
-import { getAllAdvisor, getProfileDetails } from "../services/user"
+import { setUserAdvisor } from "../store/userReducer"
+import { getProfileDetails } from "../services/user"
 import  ViewOnlyAccount from "./ViewOnlyAccount"
 
 

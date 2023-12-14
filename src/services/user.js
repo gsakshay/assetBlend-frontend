@@ -75,7 +75,6 @@ export const getAllAdvisor = async () => {
 		"Authorization"
 	] = `Bearer ${sessionStorage.getItem("accessToken")}`
 	const response = await axios.get(`${ADVISOR_URL}`)
-	console.log("Testing Data:"+response.data)
 	return response.data
 }
 
