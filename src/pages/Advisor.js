@@ -35,13 +35,13 @@ function Advisor() {
 	}, [userRole])
 
 	useEffect(() => {}, [userAdvisorDetail])
-	if (userAdvisorDetail !== null) {
+	if (userAdvisorDetail?._id) {
 		navigate(`/app/account/${userAdvisorDetail?._id}`)
 	}
 
 	return (
 		<Grid container spacing={3}>
-			{userAdvisorDetail === null ? (
+			{!userAdvisorDetail?._id ? (
 				<Grid item xs={12} sm={12}>
 					<AddAdvisor />
 				</Grid>
