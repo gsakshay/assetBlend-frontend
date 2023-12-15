@@ -38,8 +38,8 @@ function AddAdvisor() {
 
 	const handleAssignAdvisor = async (advisorId) => {
 		try {
-			await assignAdvisor(advisorId)
-			window.location.reload()
+			const response = await assignAdvisor(advisorId)
+			navigate(`/app/account/${response?.advisor?._id}`)
 		} catch (e) {
 			console.log("Could not assign Advisor", e)
 		}
