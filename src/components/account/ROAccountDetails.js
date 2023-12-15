@@ -11,6 +11,7 @@ import {
 } from "@mui/material"
 
 export const ROAccountDetails = ({ data }) => {
+	console.log(data, "data")
 	return (
 		<Card>
 			<CardHeader subheader={`${data.firstName}'s profile`} title='Profile' />
